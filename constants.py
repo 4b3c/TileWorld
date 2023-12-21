@@ -1,7 +1,6 @@
 
 window_size = (1280, 720)
-map_size = (8, 5)
-init_map_scale = 50
+map_size = (6, 3)
 
 terrain_color = {
 "water": (55, 215, 255),
@@ -15,6 +14,6 @@ terrain_color = {
 terrains = list(terrain_color.keys())
 
 
-zoom_max = 120
-zoom_min = 30
+zoom_max = 200
+zoom_min = 50
 zoom_step = 1/4
