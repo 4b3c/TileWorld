@@ -11,7 +11,7 @@ class mapClass:
 		self.wid = size[0]
 		self.hgt = size[1]
 
-		self.tiles = {(x, y): tileClass("forrest") for x in range(size[0]) for y in range(size[1])}
+		self.tiles = {(x, y): tileClass(random.choice(["forrest", "plain"])) for x in range(size[0]) for y in range(size[1])}
 
 	def gen_image(self, top_left_pos, scale):
 		self.scale = scale
