@@ -10,7 +10,7 @@ pygame.display.set_caption("TileWorld")
 running = True
 
 gameMap = tilemap((0, 0))
-playerMe = player((100, 100), 40, (153, 126, 234))
+playerMe = player(cts.CENTER, 40, (153, 126, 234))
 
 mousePos = pygame.mouse.get_pos()
 
@@ -31,8 +31,8 @@ while running:
 		playerMe.vel[0] += 1;
 		
 	window.fill(cts.COLORS["light_blue"])
-	playerMe.draw(window, gameMap)
 	gameMap.draw(window)
+	playerMe.draw(window, gameMap)
 	pygame.display.update()
 
 	for event in pygame.event.get():
