@@ -23,7 +23,7 @@ class player:
 		if (velmag > cts.MAXSPEED):
 			self.vel = [self.vel[0] * cts.MAXSPEED / velmag, self.vel[1] * cts.MAXSPEED / velmag]
 
-		world.move(self.vel)
+		self.vel = world.move(self.vel, self.pos, screen)
 		self.surface.fill(pygame.SRCALPHA)
 		pygame.draw.circle(self.surface, self.color, (self.radius, self.radius), self.radius - velmag)
 		screen.blit(self.surface, cts.add(self.pos, (self.vel[0] * 15, self.vel[1] * 15)))

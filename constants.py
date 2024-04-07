@@ -4,7 +4,7 @@ WINDOWSIZE = (1600, 900)
 CENTER = (WINDOWSIZE[0] / 2, WINDOWSIZE[1] / 2)
 CHUNKSIZE = (WINDOWSIZE[0] / 2, WINDOWSIZE[1] / 2)
 TILESIZE = 50
-MAXSPEED = 2.4
+MAXSPEED = 2
 FRICTION = 0.008
 
 SEED = 2763492
@@ -13,7 +13,8 @@ SAVEFOLDER = "worlds/"
 COLORS = {
     "light_green": (100, 230, 140),
     "dark_green": (70, 180, 110),
-    "light_blue": (100, 170, 230)
+    "light_blue": (100, 170, 230),
+    "light_grey": (40, 40, 40)
 }
 
 CHUNKSHIFT = {

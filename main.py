@@ -9,7 +9,7 @@ window = pygame.display.set_mode(cts.WINDOWSIZE)
 pygame.display.set_caption("TileWorld")
 running = True
 
-gameMap = tilemap((0, 0), "Weaven")
+gameMap = tilemap((0, 0), "Wowland")
 playerMe = player(cts.subtract(cts.CENTER, (40, 40)), 40, (153, 126, 234))
 
 mousePos = pygame.mouse.get_pos()
@@ -19,7 +19,6 @@ while running:
 	lastPos = mousePos
 	mousePos = pygame.mouse.get_pos()
 	mousePressed = pygame.mouse.get_pressed()
-
 	keypresses = pygame.key.get_pressed()
 
 	if (keypresses[pygame.K_w]):
