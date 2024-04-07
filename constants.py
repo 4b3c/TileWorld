@@ -1,10 +1,11 @@
+import random
 
 WINDOWSIZE = (1600, 900)
 CENTER = (WINDOWSIZE[0] / 2, WINDOWSIZE[1] / 2)
 CHUNKSIZE = (WINDOWSIZE[0] / 2, WINDOWSIZE[1] / 2)
 TILESIZE = 50
 MAXSPEED = 2.4
-FRICTION = 0.006
+FRICTION = 0.008
 
 SEED = 2763492
 
@@ -15,9 +16,9 @@ COLORS = {
 }
 
 CHUNKSHIFT = {
-	-1: range(-1, 3, 1),
+	-1: range(2, -2, -1),
     0: range(-1, 3, 1),
-	1: range(2, -2, -1)
+	1: range(-1, 3, 1)
 }
 
 

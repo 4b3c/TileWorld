@@ -31,7 +31,7 @@ while running:
 		playerMe.vel[0] += 0.1;
 		
 	window.fill(cts.COLORS["light_blue"])
-	gameMap.draw(window)
+	gameMap.draw(window, mousePos, mousePressed)
 	playerMe.draw(window, gameMap)
 	pygame.display.update()
 
