@@ -8,6 +8,7 @@ MAXSPEED = 2.4
 FRICTION = 0.008
 
 SEED = 2763492
+SAVEFOLDER = "worlds/"
 
 COLORS = {
     "light_green": (100, 230, 140),
@@ -31,3 +32,9 @@ def add(list1, list2):
 def subtract(list1, list2):
     return([list1[0] - list2[0], list1[1] - list2[1]])
 
+def strtup(string: str):
+    try:
+        return int(string[1:string.index(",")]), int(string[string.index(" "):-1])
+    except:
+        print(string)
+        quit()

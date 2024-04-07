@@ -9,11 +9,12 @@ window = pygame.display.set_mode(cts.WINDOWSIZE)
 pygame.display.set_caption("TileWorld")
 running = True
 
-gameMap = tilemap((0, 0))
+gameMap = tilemap((0, 0), "Weaven")
 playerMe = player(cts.subtract(cts.CENTER, (40, 40)), 40, (153, 126, 234))
 
 mousePos = pygame.mouse.get_pos()
 
+print("Starting")
 while running:
 	lastPos = mousePos
 	mousePos = pygame.mouse.get_pos()
@@ -37,5 +38,6 @@ while running:
 
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
+			gameMap.savechunks()
 			pygame.quit()
 			quit()
