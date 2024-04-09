@@ -65,13 +65,29 @@ class tilemap():
 
 
 	def move(self, dist, playerpos, window):
-		playerRect = pygame.Rect(playerpos[0] + dist[0] + 5, playerpos[1] + dist[1] + 5, 20, 20)
+		playerRect = pygame.Rect(playerpos[0] + dist[0] - 5, playerpos[1] + dist[1] - 5, 90, 90)
 		self.setcolidable()
 		colindex = playerRect.collidelistall(self.colidable)
 		if (colindex != []):
 			self.windowpos = cts.add(self.windowpos, (dist[0], dist[1]))
 			# pygame.draw.rect(window, (255, 0, 0), self.colidable[colindex[0]]) # For debugging colisions
 			return [0, 0]
+
+		if (dist[0] > 0):
+			# check for horizontal collisions moving towards the right
+			pass
+		elif: (dist[0] < 0):
+			# check for horizontal collisions moving towards the left
+			pass
+
+		if (dist[1] > 0):
+			# check for horizontal collisions moving upwards
+			pass
+		elif: (dist[1] < 0):
+			# check for horizontal collisions moving downwards
+			pass
+
+
 	
 		# Updates the window position, but if we are near an edge of the rendered chunks, unloads and loads the necessary ones
 		self.windowpos = cts.subtract(self.windowpos, dist)
