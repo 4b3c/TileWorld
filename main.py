@@ -14,25 +14,24 @@ playerMe = player(cts.subtract(cts.CENTER, (40, 40)), 40, (153, 126, 234))
 
 mousePos = pygame.mouse.get_pos()
 
-print("Starting")
+print("Starting...")
 while running:
 	lastPos = mousePos
 	mousePos = pygame.mouse.get_pos()
 	mousePressed = pygame.mouse.get_pressed()
 	keypresses = pygame.key.get_pressed()
 
-	if (keypresses[pygame.K_w]):
-		playerMe.vel[1] += -0.2;
-	if (keypresses[pygame.K_s]):
-		playerMe.vel[1] += 0.2;
-	if (keypresses[pygame.K_a]):
-		playerMe.vel[0] += -0.2;
-	if (keypresses[pygame.K_d]):
-		playerMe.vel[0] += 0.2;
+	if (keypresses[pygame.K_w] or keypresses[pygame.K_UP]):
+		gameMap.vel[1] += -0.08;
+	if (keypresses[pygame.K_s] or keypresses[pygame.K_DOWN]):
+		gameMap.vel[1] += 0.08;
+	if (keypresses[pygame.K_a] or keypresses[pygame.K_LEFT]):
+		gameMap.vel[0] += -0.08;
+	if (keypresses[pygame.K_d] or keypresses[pygame.K_RIGHT]):
+		gameMap.vel[0] += 0.08;
 		
 	window.fill(cts.COLORS["light_blue"])
-	gameMap.draw(window, mousePos, mousePressed)
-	playerMe.draw(window, gameMap)
+	gameMap.draw(window, playerMe, mousePos, mousePressed)
 	pygame.display.update()
 
 	for event in pygame.event.get():

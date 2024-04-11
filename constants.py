@@ -4,7 +4,8 @@ WINDOWSIZE = (1600, 900)
 CENTER = (WINDOWSIZE[0] / 2, WINDOWSIZE[1] / 2)
 CHUNKSIZE = (WINDOWSIZE[0] / 2, WINDOWSIZE[1] / 2)
 TILESIZE = 50
-MAXSPEED = 2
+PLAYERSIZE = (40, 40)
+MAXSPEED = 4
 FRICTION = 0.008
 
 SEED = 2763492
@@ -30,8 +31,8 @@ def muliply(list1, list2):
 def add(list1, list2):
     return([list1[0] + list2[0], list1[1] + list2[1]])
 
-def subtract(list1, list2):
-    return([list1[0] - list2[0], list1[1] - list2[1]])
+def subtract(list1, list2, list3 = [0, 0]):
+    return([list1[0] - list2[0] - list3[0], list1[1] - list2[1] - list3[1]])
 
 def strtup(string: str):
     try:

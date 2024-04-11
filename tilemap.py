@@ -1,3 +1,4 @@
+import math
 import pygame
 import json
 import os
@@ -8,6 +9,7 @@ class tilemap():
 	def __init__(self, pos, name):
 		# Set windowpos which is a relative position and is how rendered chunk placement is calculated
 		self.windowpos = pos
+		self.vel = [0, 0]
 		self.chunkatzero = (0, 0)
 		self.name = name
 		self.filename = self.name + ".json"
@@ -15,7 +17,6 @@ class tilemap():
 		# Load the modified chunks, or else create an empty dictionary for modified chunks
 		# Creates a dictionary of rendered chunks where the key is their relative position (x, y)
 		self.renderedchunks = {(x, y): chunk((x, y)) for x in range(-1, 3) for y in range(-1, 3)}
-		self.setcolidable()
 
 		# Rendered chunks are a 4x4 grid, where each chunk is half the width and height of the game window
 		if (self.filename in os.listdir(cts.SAVEFOLDER)):
@@ -49,29 +50,38 @@ class tilemap():
 					self.renderedchunks[(x, y)] = self.chunks[(x, y)]
 				except:
 					pass
-		self.setcolidable()
 
-	def draw(self, screen, mousepos, mousepressed):
+	def draw(self, screen, character, mousepos, mousepressed):
+		# Apply "friction" so movement slows to a stop smoothly
+		self.vel = [self.vel[0] * (1 - cts.FRICTION), self.vel[1] * (1 - cts.FRICTION)]
+
+		# Cap tha magnitude of the velocity to prevent diagonal movement from being faster than cardinal movement
+		velmag = math.sqrt(self.vel[0]**2 + self.vel[1]**2)
+		if (velmag > cts.MAXSPEED):
+			self.vel = [self.vel[0] * cts.MAXSPEED / velmag, self.vel[1] * cts.MAXSPEED / velmag]
+
+		self.move(self.vel)
+		self.setcolidable()
+		collided, moveback = self.checkcollisions()
+		if (collided):
+			self.move(moveback)
 
 		# Draws each chunk based on its key (x, y) and multiplying that by it's size, then adding the window position
 		for mapchunk in self.renderedchunks:
 			xpos, ypos = cts.add(self.windowpos, cts.muliply(mapchunk, cts.CHUNKSIZE))
 			screen.blit(self.renderedchunks[mapchunk], (xpos, ypos))
 			if (mousepressed[0]):
-				if (mousepressed[0] and pygame.Rect(xpos, ypos, cts.CHUNKSIZE[0], cts.CHUNKSIZE[1]).collidepoint(mousepos)):
+				if (pygame.Rect(xpos, ypos, cts.CHUNKSIZE[0], cts.CHUNKSIZE[1]).collidepoint(mousepos)):
 					tile = self.renderedchunks[mapchunk].tilepos((mousepos[0] - xpos, mousepos[1] - ypos))
 					self.renderedchunks[mapchunk].changetile(tile)
-					self.setcolidable()
+
+		playerpos = cts.subtract(cts.CENTER, self.vel, cts.PLAYERSIZE)
+		character.draw(screen, playerpos, velmag)
 
 
-	def move(self, playervel, playerpos, window):
-		self.setcolidable()
-		dist = self.check_collision(self.colidable, pygame.Rect(playerpos[0] + playervel[0], playerpos[1] + playervel[1], 80, 80), playervel[0], playervel[1])
-
-		# self.windowpos = cts.add(self.windowpos, (dist[2], dist[3]))
-	
+	def move(self, distance):
 		# Updates the window position, but if we are near an edge of the rendered chunks, unloads and loads the necessary ones
-		self.windowpos = cts.subtract(self.windowpos, dist)
+		self.windowpos = cts.subtract(self.windowpos, distance)
 		if (self.windowpos[0] < 0):
 			self.windowpos[0] += cts.CHUNKSIZE[0]
 			self.shiftchunks(1, 0)
@@ -85,8 +95,6 @@ class tilemap():
 		elif (self.windowpos[1] > cts.CHUNKSIZE[1]):
 			self.windowpos[1] -= cts.CHUNKSIZE[1]
 			self.shiftchunks(0, -1)
-
-		return dist
 
 	def shiftchunks(self, x, y):
 		# Given the 4x4 grid of rendered chunks, we move each row and/or column to the one behind it
@@ -108,43 +116,7 @@ class tilemap():
 		self.chunkatzero = cts.add(self.chunkatzero, (x, y))
 		self.setcolidable()
 
-	def check_collision(self, walls, player: pygame.Rect, player_vel_x, player_vel_y):
-		new_vel_x = player_vel_x
-		new_vel_y = player_vel_y
-		offset_x = 0
-		offset_y = 0
-
-		# Check for collisions with each wall
-		for wall in walls:
-			if (player.top < wall.bottom and player.bottom > wall.top):
-				if (player.right > wall.left and player.left < wall.left):
-					print("Colided left of wall")
-					if (player_vel_x > 0):
-						new_vel_x = 0
-						offset_x = player.right - wall.left
-				elif (player.right > wall.right and player.left < wall.right):
-					print("Colided right of wall")
-					if (player_vel_x < 0):
-						new_vel_x = 0
-						offset_x = player.left - wall.right
-
-			if (player.right > wall.left and player.left < wall.right):
-				if (player.top < wall.top and player.bottom > wall.top):
-					print("Colided top of wall")
-					if (player_vel_y > 0):
-						new_vel_y = 0
-						offset_y = player.bottom - wall.top
-				elif (player.top < wall.bottom and player.bottom > wall.bottom):
-					print("Colided bottom of wall")
-					if (player_vel_y < 0):
-						new_vel_y = 0
-						offset_y = player.top - wall.bottom
-
-		if offset_x > offset_y and offset_y != 0:
-			offset_x = 0
-		if offset_y > offset_x and offset_x != 0:
-			offset_y = 0
-
-		return [new_vel_x, new_vel_y, offset_x, offset_y]
+	def checkcollisions(self, walls, character):
+		pass
 
 
