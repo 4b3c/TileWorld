@@ -64,30 +64,11 @@ class tilemap():
 					self.setcolidable()
 
 
-	def move(self, dist, playerpos, window):
-		playerRect = pygame.Rect(playerpos[0] + dist[0] - 5, playerpos[1] + dist[1] - 5, 90, 90)
+	def move(self, playervel, playerpos, window):
 		self.setcolidable()
-		colindex = playerRect.collidelistall(self.colidable)
-		if (colindex != []):
-			self.windowpos = cts.add(self.windowpos, (dist[0], dist[1]))
-			# pygame.draw.rect(window, (255, 0, 0), self.colidable[colindex[0]]) # For debugging colisions
-			return [0, 0]
+		dist = self.check_collision(self.colidable, pygame.Rect(playerpos[0] + playervel[0], playerpos[1] + playervel[1], 80, 80), playervel[0], playervel[1])
 
-		if (dist[0] > 0):
-			# check for horizontal collisions moving towards the right
-			pass
-		elif: (dist[0] < 0):
-			# check for horizontal collisions moving towards the left
-			pass
-
-		if (dist[1] > 0):
-			# check for horizontal collisions moving upwards
-			pass
-		elif: (dist[1] < 0):
-			# check for horizontal collisions moving downwards
-			pass
-
-
+		# self.windowpos = cts.add(self.windowpos, (dist[2], dist[3]))
 	
 		# Updates the window position, but if we are near an edge of the rendered chunks, unloads and loads the necessary ones
 		self.windowpos = cts.subtract(self.windowpos, dist)
@@ -126,4 +107,44 @@ class tilemap():
 				self.renderedchunks[(col, row)] = mapchunk
 		self.chunkatzero = cts.add(self.chunkatzero, (x, y))
 		self.setcolidable()
+
+	def check_collision(self, walls, player: pygame.Rect, player_vel_x, player_vel_y):
+		new_vel_x = player_vel_x
+		new_vel_y = player_vel_y
+		offset_x = 0
+		offset_y = 0
+
+		# Check for collisions with each wall
+		for wall in walls:
+			if (player.top < wall.bottom and player.bottom > wall.top):
+				if (player.right > wall.left and player.left < wall.left):
+					print("Colided left of wall")
+					if (player_vel_x > 0):
+						new_vel_x = 0
+						offset_x = player.right - wall.left
+				elif (player.right > wall.right and player.left < wall.right):
+					print("Colided right of wall")
+					if (player_vel_x < 0):
+						new_vel_x = 0
+						offset_x = player.left - wall.right
+
+			if (player.right > wall.left and player.left < wall.right):
+				if (player.top < wall.top and player.bottom > wall.top):
+					print("Colided top of wall")
+					if (player_vel_y > 0):
+						new_vel_y = 0
+						offset_y = player.bottom - wall.top
+				elif (player.top < wall.bottom and player.bottom > wall.bottom):
+					print("Colided bottom of wall")
+					if (player_vel_y < 0):
+						new_vel_y = 0
+						offset_y = player.top - wall.bottom
+
+		if offset_x > offset_y and offset_y != 0:
+			offset_x = 0
+		if offset_y > offset_x and offset_x != 0:
+			offset_y = 0
+
+		return [new_vel_x, new_vel_y, offset_x, offset_y]
+
 
