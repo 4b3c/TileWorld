@@ -62,7 +62,7 @@ class tilemap():
 
 		self.move(self.vel)
 		self.setcolidable()
-		collided, moveback = self.checkcollisions()
+		collided, moveback = self.checkcollisions(character)
 		if (collided):
 			self.move(moveback)
 
@@ -116,7 +116,31 @@ class tilemap():
 		self.chunkatzero = cts.add(self.chunkatzero, (x, y))
 		self.setcolidable()
 
-	def checkcollisions(self, walls, character):
-		pass
+	def checkcollisions(self, character):
+		playerrect = pygame.Rect(character.pos[0], character.pos[1], 80, 80)
+		moveback = [0, 0]
+		maxmove = 10
+		for wall in self.colidable:
+			if playerrect.colliderect(wall):
+				overlapleft = playerrect.right - wall.left
+				overlapright = wall.right - playerrect.left
+				overlaptop = playerrect.bottom - wall.top
+				overlapbottom = wall.bottom - playerrect.top
+
+				print(overlapleft, overlapright, overlaptop, overlapbottom)
+
+				if (overlapleft < overlapright and overlapleft < maxmove):
+					moveback[0] = -overlapleft
+				elif (overlapright < maxmove):
+					moveback[0] = overlapright
+				
+				if (overlaptop < overlapbottom and overlaptop < maxmove):
+					moveback[1] = overlaptop
+				elif (overlapbottom < maxmove):
+					moveback[1] = -overlapbottom
+
+				return True, moveback
+
+		return False, moveback
 
 
