@@ -62,7 +62,8 @@ class tilemap():
 
 		self.move(self.vel)
 		self.setcolidable()
-		collided, moveback = self.checkcollisions(character)
+		playerpos = cts.subtract(cts.CENTER, (self.vel[0] * -5, self.vel[1] * -5), cts.PLAYERSIZE)
+		collided, moveback = self.checkcollisions(playerpos)
 		if (collided):
 			self.move(moveback)
 
@@ -75,7 +76,7 @@ class tilemap():
 					tile = self.renderedchunks[mapchunk].tilepos((mousepos[0] - xpos, mousepos[1] - ypos))
 					self.renderedchunks[mapchunk].changetile(tile)
 
-		playerpos = cts.subtract(cts.CENTER, self.vel, cts.PLAYERSIZE)
+		playerpos = cts.subtract(cts.CENTER, (self.vel[0] * -5, self.vel[1] * -5), cts.PLAYERSIZE)
 		character.draw(screen, playerpos, velmag)
 
 
@@ -116,8 +117,8 @@ class tilemap():
 		self.chunkatzero = cts.add(self.chunkatzero, (x, y))
 		self.setcolidable()
 
-	def checkcollisions(self, character):
-		playerrect = pygame.Rect(character.pos[0], character.pos[1], 80, 80)
+	def checkcollisions(self, playerpos):
+		playerrect = pygame.Rect(playerpos[0], playerpos[1], 80, 80)
 		moveback = [0, 0]
 		maxmove = 10
 		for wall in self.colidable:

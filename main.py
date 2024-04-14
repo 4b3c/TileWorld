@@ -10,7 +10,7 @@ pygame.display.set_caption("TileWorld")
 running = True
 
 gameMap = tilemap((0, 0), "Wowland")
-playerMe = player(cts.subtract(cts.CENTER, (40, 40)), 40, (153, 126, 234))
+playerMe = player(cts.subtract(cts.CENTER, (40, 40)), 40, (124, 176, 112))
 
 mousePos = pygame.mouse.get_pos()
 
