@@ -37,7 +37,7 @@ def generate_squares():
 def move_squares(x_dist, y_dist):
 	return [pygame.Rect(sq.x + x_dist, sq.y + y_dist, sq.width, sq.height) for sq in squares]
 
-# Check collision between player and squares
+# Check collision between player and obstacles
 def check_collision(squares, camera_x, camera_y):
 	for square in squares:
 		if player_rect.colliderect(square):
@@ -48,16 +48,16 @@ def check_collision(squares, camera_x, camera_y):
 			if debugprint:
 				print(dx, dy)
 
-			# Adjust player position based on collision direction
+			# Adjust camera position based on collision direction
 			if abs(dx) > abs(dy):
-				if dx > 0: # Moving left
+				if dx > 0: # Player moving left
 					camera_x += player_rect.x - square.right
-				else: # Moving right
+				else: # Player moving right
 					camera_x -= square.left - player_rect.right
 			else:
-				if dy > 0: # Moving up
+				if dy > 0: # Player moving up
 					camera_y += player_rect.y - square.bottom
-				else: # Moving down
+				else: # Player moving down
 					camera_y -= square.top - player_rect.bottom
 	return camera_x, camera_y
 
@@ -78,7 +78,7 @@ while running:
 	# Get key presses
 	keys = pygame.key.get_pressed()
 	
-	# Move the player
+	# Move the camera
 	if keys[pygame.K_w]: camera_y += player_speed
 	if keys[pygame.K_a]: camera_x += player_speed
 	if keys[pygame.K_s]: camera_y -= player_speed
