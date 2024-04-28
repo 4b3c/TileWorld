@@ -1,21 +1,23 @@
 import random
+import pygame
 
 WINDOWSIZE = (1600, 900)
 CENTER = (WINDOWSIZE[0] / 2, WINDOWSIZE[1] / 2)
 CHUNKSIZE = (WINDOWSIZE[0] / 2, WINDOWSIZE[1] / 2)
 TILESIZE = 50
 PLAYERSIZE = (40, 40)
-MAXSPEED = 4
-FRICTION = 0.008
+SPEED = 0.03
+FRICTION = 0.02
 
 SEED = 2763492
 SAVEFOLDER = "worlds/"
 
 COLORS = {
-    "light_green": (100, 230, 140),
-    "dark_green": (70, 180, 110),
-    "light_blue": (100, 170, 230),
-    "light_grey": (40, 40, 40)
+    "light_green": pygame.Color(100, 230, 140),
+    "dark_green": pygame.Color(70, 180, 110),
+    "light_blue": pygame.Color(100, 170, 230),
+    "light_grey": pygame.Color(40, 40, 40),
+    "player": pygame.Color(123, 13, 12)
 }
 
 CHUNKSHIFT = {
@@ -23,20 +25,3 @@ CHUNKSHIFT = {
     0: range(-1, 3, 1),
 	1: range(-1, 3, 1)
 }
-
-
-def muliply(list1, list2):
-    return([list1[0] * list2[0], list1[1] * list2[1]])
-
-def add(list1, list2):
-    return([list1[0] + list2[0], list1[1] + list2[1]])
-
-def subtract(list1, list2, list3 = [0, 0]):
-    return([list1[0] - list2[0] - list3[0], list1[1] - list2[1] - list3[1]])
-
-def strtup(string: str):
-    try:
-        return int(string[1:string.index(",")]), int(string[string.index(" "):-1])
-    except:
-        print(string)
-        quit()
