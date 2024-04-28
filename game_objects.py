@@ -1,4 +1,5 @@
 import pygame
+import math
 import constants as cts
 
 
@@ -28,6 +29,11 @@ class VelocityObject(GameObject):
 	def accelerate(self, x: float, y: float):
 		self.vel[0] = self.vel[0] + x
 		self.vel[1] = self.vel[1] + y
+
+		velmag = math.sqrt(self.vel[0]**2 + self.vel[1]**2)
+		if (velmag > cts.MAXSPEED):
+			self.vel[0] = self.vel[0] * cts.MAXSPEED / velmag
+			self.vel[1] = self.vel[1] * cts.MAXSPEED / velmag
 
 	def update_pos(self, friction: float):
 		self.move(self.vel[0], self.vel[1])
