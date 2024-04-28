@@ -2,7 +2,7 @@ import pygame
 import constants as cts
 
 
-class game_object:
+class GameObject:
 
     def __init__(self, pos: list, size: list, color: pygame.Color) -> None:
         self.pos = pos
@@ -16,10 +16,10 @@ class game_object:
         self.pos[1] += y
 
     def draw(self, screen: pygame.Surface, camera_offset: list):
-        screen.blit(self.surface, (self.pos[0] + camera_offset[0], self.pos[1] + camera_offset[1]))
+        screen.blit(self.surface, (round(self.pos[0] - camera_offset[0]), round(self.pos[1] - camera_offset[1])))
 
 
-class velocity_object(game_object):
+class VelocityObject(GameObject):
 
     def __init__(self, pos: list, size: list, color: pygame.Color, vel: list) -> None:
         super().__init__(pos, size, color)
@@ -29,16 +29,15 @@ class velocity_object(game_object):
         self.vel[0] = self.vel[0] + x
         self.vel[1] = self.vel[1] + y
 
-    def update(self, friction: float, screen: pygame.Surface, camera_offset: list):
+    def update(self, friction: float):
         self.move(self.vel[0], self.vel[1])
-        self.draw(screen, camera_offset)
 
         self.vel[0] *= (1 - friction)
         self.vel[1] *= (1 - friction)
 
 
-class player(velocity_object):
+class Player(VelocityObject):
 
     def __init__(self, name: str) -> None:
-        super().__init__([0, 0], cts.PLAYERSIZE, cts.COLORS["player"], [0, 0])
+        super().__init__([0.0, 0.0], cts.PLAYERSIZE, cts.COLORS["player"], [0.0, 0.0])
         self.name = name

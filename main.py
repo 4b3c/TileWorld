@@ -1,6 +1,7 @@
 import pygame
 import constants as cts
-from game_object import player
+from game_objects import Player
+from camera import Camera
 
 pygame.init()
 
@@ -8,7 +9,8 @@ window = pygame.display.set_mode(cts.WINDOWSIZE)
 pygame.display.set_caption("TileWorld")
 running = True
 
-character = player("Reza")
+character = Player("Reza")
+main_camera = Camera(character)
 
 
 mousePos = pygame.mouse.get_pos()
@@ -25,8 +27,8 @@ while running:
 	if (keypresses[pygame.K_a] or keypresses[pygame.K_LEFT]): character.accelerate(-cts.SPEED, 0.0)
 	if (keypresses[pygame.K_d] or keypresses[pygame.K_RIGHT]): character.accelerate(cts.SPEED, 0.0)
 			
-	window.fill(cts.COLORS["light_blue"])
-	character.update(cts.FRICTION, window, cts.CENTER)
+	main_camera.update()
+	main_camera.draw_scene(window)
 	pygame.display.update()
 
 	for event in pygame.event.get():
