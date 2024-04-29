@@ -20,6 +20,7 @@ main_camera = Camera(character, world)
 
 
 mousePos = pygame.mouse.get_pos()
+mouseDown = False
 
 print("Starting...")
 while (running):
@@ -28,10 +29,13 @@ while (running):
 	mousePressed = pygame.mouse.get_pressed()
 	keypresses = pygame.key.get_pressed()
 
-	if (mousePressed[0]):
-		print(pxl_to_tile((mousePos[0] + main_camera.pos[0], mousePos[1] + main_camera.pos[1])))
+	if (mousePressed[0] and not mouseDown):
+		world.modify((mousePos[0] + main_camera.pos[0], mousePos[1] + main_camera.pos[1]), "w")
+		mouseDown = True
+	elif (mouseDown and not mousePressed[0]):
+		mouseDown = False
 
-	if (keypresses[pygame.K_w] or keypresses[pygame.K_UP]): character.accelerate(0.0, -cts.ACCELERATION);
+	if (keypresses[pygame.K_w] or keypresses[pygame.K_UP]): character.accelerate(0.0, -cts.ACCELERATION)
 	if (keypresses[pygame.K_s] or keypresses[pygame.K_DOWN]): character.accelerate(0.0, cts.ACCELERATION)
 	if (keypresses[pygame.K_a] or keypresses[pygame.K_LEFT]): character.accelerate(-cts.ACCELERATION, 0.0)
 	if (keypresses[pygame.K_d] or keypresses[pygame.K_RIGHT]): character.accelerate(cts.ACCELERATION, 0.0)
@@ -48,5 +52,6 @@ while (running):
 
 	for event in pygame.event.get():
 		if (event.type == pygame.QUIT):
+			world.save_to_file()
 			pygame.quit()
 			quit()

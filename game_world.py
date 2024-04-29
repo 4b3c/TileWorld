@@ -1,5 +1,6 @@
 import pygame
 import os
+import json
 import constants as cts
 
 
@@ -47,11 +48,11 @@ class Chunk:
 			pygame.draw.rect(self.surface, self.tiles[tile].color, (tile[0] * ts, tile[1] * ts, ts, ts))
 
 		# Add border and coordinate text for debugging purposes
-		pygame.draw.rect(self.surface, (40, 40, 40), (0, 0, cts.CHUNKPIXELSIZE[0], cts.CHUNKPIXELSIZE[0]), 2)
-		text_surface = cts.FONT.render(str(self.pos), True, (40, 40, 40))
-		text_rect = text_surface.get_rect()
-		text_rect.topleft = (15, 15)
-		self.surface.blit(text_surface, text_rect)
+		# pygame.draw.rect(self.surface, (40, 40, 40), (0, 0, cts.CHUNKPIXELSIZE[0], cts.CHUNKPIXELSIZE[0]), 2)
+		# text_surface = cts.FONT.render(str(self.pos), True, (40, 40, 40))
+		# text_rect = text_surface.get_rect()
+		# text_rect.topleft = (15, 15)
+		# self.surface.blit(text_surface, text_rect)
 
 	# Draws the chunk to a given screen
 	def draw_to(self, screen: pygame.Surface, camera_offset: list):
@@ -100,6 +101,17 @@ class Map:
 			(0, "y"): range(0, self.chunk_viewport_count[1], 1),
 			(1, "y"): range(0, self.chunk_viewport_count[1], 1)
 		}
+
+		if (self.savefile in os.listdir(cts.SAVEFOLDER)):
+			with open(cts.SAVEFOLDER + self.savefile, 'r') as f:
+				chunkedits = json.load(f)
+			for chunk in chunkedits:
+				tuple_chunk = cts.str_to_tuple(chunk)
+				if (tuple_chunk not in self.chunks):
+					self.chunks[tuple_chunk] = Chunk(tuple_chunk, cts.SEED)
+				for edit in chunkedits[chunk]:
+					self.chunks[tuple_chunk].modify(cts.str_to_tuple(edit), chunkedits[chunk][edit])
+
 		
 	# Based upon the position of the camera, decides if we need to shift the dict of rendered chunks
 	def update_pos(self, camera_offset: list):
@@ -143,21 +155,14 @@ class Map:
 	# Allows for the modification of tiles
 	def modify(self, coordinates: list, change: str):
 		chunk = pxl_to_chunk(coordinates)
-		tile = pxl_to_chunk(coordinates)
+		tile_x, tile_y = pxl_to_tile(coordinates)
+		tile = (tile_x - (chunk[0] * cts.CHUNKSIZE[0]), tile_y - (chunk[1] * cts.CHUNKSIZE[1]))
 		self.chunks[chunk].modify(tile, change)
 
-	def get_save_dict(self) -> dict:
+	def save_to_file(self) -> dict:
 		save_list = {}
 		for chunk in self.chunks:
 			if (self.chunks[chunk].get_save_dict() != None):
 				save_list[str(chunk)] = self.chunks[chunk].get_save_dict()
-		if save_list == {}:
-			return None
-		return save_list
-
-
-# chunky = Map("Vretion")
-# chunky.modify((0, 0), (2, 3), "t")
-# chunky.modify((0, 0), (2, 2), "w")
-# chunky.modify((0, 2), (2, 6), "w")
-# print(chunky.get_save_dict())
+		with open(cts.SAVEFOLDER + self.savefile, 'w') as f:
+			json.dump(save_list, f, indent = 1)

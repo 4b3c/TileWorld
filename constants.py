@@ -2,7 +2,7 @@ import pygame
 pygame.init()
 
 # Window
-WINDOWSIZE = (1600, 900)
+WINDOWSIZE = (1400, 800)
 CENTER = (WINDOWSIZE[0] / 2, WINDOWSIZE[1] / 2)
 
 # World
@@ -20,7 +20,7 @@ MAXSPEED = ACCELERATION / FRICTION
 
 # General
 COLORS = {
-    # General colors
+	# General colors
 	"light_green": pygame.Color(100, 230, 140),
 	"dark_green": pygame.Color(70, 180, 110),
 	"light_blue": pygame.Color(100, 170, 230),
@@ -28,7 +28,15 @@ COLORS = {
 	# Player
 	"player": pygame.Color(120, 30, 10),
 	# Tile modificiations
-    "w": pygame.Color(70, 70, 80),
-    "t": pygame.Color(50, 190, 90)
+	"w": pygame.Color(40, 40, 40),
+	"t": pygame.Color(50, 190, 90)
 }
+
 FONT = pygame.font.Font(None, 36)
+
+def str_to_tuple(string: str):
+    try:
+        return int(string[1:string.index(",")]), int(string[string.index(" "):-1])
+    except:
+        print(string)
+        quit()
