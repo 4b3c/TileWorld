@@ -2,7 +2,7 @@ import pygame
 import time
 import constants as cts
 from game_objects import Player
-from game_world import Map
+from game_world import Map, pxl_to_tile
 from camera import Camera
 
 pygame.init()
@@ -22,15 +22,14 @@ main_camera = Camera(character, world)
 mousePos = pygame.mouse.get_pos()
 
 print("Starting...")
-while running:
+while (running):
 	lastPos = mousePos
 	mousePos = pygame.mouse.get_pos()
 	mousePressed = pygame.mouse.get_pressed()
 	keypresses = pygame.key.get_pressed()
 
-	if mousePressed[0]:
-		for chunk in world.rendered_chunks:
-			print(chunk, world.rendered_chunks[chunk])
+	if (mousePressed[0]):
+		print(pxl_to_tile((mousePos[0] + main_camera.pos[0], mousePos[1] + main_camera.pos[1])))
 
 	if (keypresses[pygame.K_w] or keypresses[pygame.K_UP]): character.accelerate(0.0, -cts.ACCELERATION);
 	if (keypresses[pygame.K_s] or keypresses[pygame.K_DOWN]): character.accelerate(0.0, cts.ACCELERATION)
@@ -48,6 +47,6 @@ while running:
 		last_time = time.time()
 
 	for event in pygame.event.get():
-		if event.type == pygame.QUIT:
+		if (event.type == pygame.QUIT):
 			pygame.quit()
 			quit()

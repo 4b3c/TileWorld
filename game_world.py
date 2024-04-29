@@ -2,17 +2,15 @@ import pygame
 import os
 import constants as cts
 
-pygame.init()
-font = pygame.font.Font(None, 36)
 
 def scramble(x: int, y: int, z: int) -> int:
 	return (x + 100) * (y + 200) * (z + 300) % cts.SEED
 
-def pxl_to_chunk(coordinates: list):
-		return (coordinates[0] // cts.CHUNKPIXELSIZE[0], coordinates[1] // cts.CHUNKPIXELSIZE[1])
+def pxl_to_chunk(coordinates: list) -> tuple:
+	return (int(coordinates[0] // cts.CHUNKPIXELSIZE[0]), int(coordinates[1] // cts.CHUNKPIXELSIZE[1]))
 
-def chunk_to_pxl(coordinates: list):
-		return (coordinates[0] * cts.CHUNKPIXELSIZE[0], coordinates[1] * cts.CHUNKPIXELSIZE[1])
+def pxl_to_tile(coordinates: list) -> tuple:
+	return (int(coordinates[0] // cts.TILESIZE), int(coordinates[1] // cts.TILESIZE))
 
 
 class Tile:
@@ -20,7 +18,14 @@ class Tile:
 	def __init__(self, tile_id: int):
 		self.tile_id = tile_id
 		self.color = (tile_id % 255, 120, 160)
-		self.obstacle = False
+		self.changes = None
+	
+	# changes is a string containing all the modifications made to the tile in order 
+	def modify(self, change: str):
+		if (self.changes == None):
+			self.changes = change
+		else:
+			self.changes += change
 
 
 class Chunk:
@@ -35,20 +40,39 @@ class Chunk:
 		self.surface = pygame.Surface(cts.CHUNKPIXELSIZE)
 		self.generate_surface()
 
+	# Generates the pygame surface used for displaying to the screen
 	def generate_surface(self):
 		ts = cts.TILESIZE
 		for tile in self.tiles:
 			pygame.draw.rect(self.surface, self.tiles[tile].color, (tile[0] * ts, tile[1] * ts, ts, ts))
 
-		# Add border and coordinate text
+		# Add border and coordinate text for debugging purposes
 		pygame.draw.rect(self.surface, (40, 40, 40), (0, 0, cts.CHUNKPIXELSIZE[0], cts.CHUNKPIXELSIZE[0]), 2)
-		text_surface = font.render(str(self.pos), True, (40, 40, 40))
+		text_surface = cts.FONT.render(str(self.pos), True, (40, 40, 40))
 		text_rect = text_surface.get_rect()
 		text_rect.topleft = (15, 15)
 		self.surface.blit(text_surface, text_rect)
 
+	# Draws the chunk to a given screen
 	def draw_to(self, screen: pygame.Surface, camera_offset: list):
 		screen.blit(self.surface, (self.pxl_pos[0] - camera_offset[0], self.pxl_pos[1] - camera_offset[1]))
+	
+	# Allows for the modification of tiles
+	def modify(self, tile: Tile, change: str):
+		ts = cts.TILESIZE
+		self.tiles[tile].modify(change)
+		pygame.draw.rect(self.surface, cts.COLORS[change], (tile[0] * ts, tile[1] * ts, ts, ts))
+
+	def get_save_dict(self) -> dict:
+		save_list = {}
+		for tile in self.tiles:
+			if (self.tiles[tile].changes != None):
+				save_list[str(tile)] = self.tiles[tile].changes
+		if save_list == {}:
+			return None
+		return save_list
+
+
 
 
 class Map:
@@ -57,57 +81,45 @@ class Map:
 		self.savefile = savefile
 		self.viewport_size = cts.WINDOWSIZE
 		width, height = pxl_to_chunk(self.viewport_size)
-		self.chunk_viewport_count = (width + 2, height + 2)
-
-		self.chunkshift_x = {
-			-1: range(self.chunk_viewport_count[0] - 1, -1, -1),
-			0: range(0, self.chunk_viewport_count[0], 1),
-			1: range(0, self.chunk_viewport_count[0], 1)
-		}
-
-		self.chunkshift_y = {
-			-1: range(self.chunk_viewport_count[1] - 1, -1, -1),
-			0: range(0, self.chunk_viewport_count[1], 1),
-			1: range(0, self.chunk_viewport_count[1], 1)
-		}
-
-		# # World has already been created, so load from a file
-		# if (self.filename in os.listdir(cts.SAVEFOLDER)):
-		# 	self.chunks = self.load_chunks()
-		# # Create chunks for the first time
-		# else:
-			
+		width += 2
+		height += 2
+		self.chunk_viewport_count = (width, height)
+		
+		# chunks is a dictionary of chunks where each key corresponds to the chunk at that location
+		# rendered_chunks is a dictionary of viewable (or nearly in frame) chunks
+		# each rendered_chunks key corresponds to a chunk's position within the viewport, not its actual position
 		self.chunks = {(x, y): Chunk((x, y), scramble(x, y, cts.SEED)) for x in range(-8, 8) for y in range(-8, 8)}
-		self.rendered_chunks = {}
-		self.get_rendered([0, 0])
+		self.rendered_chunks = {(x, y): self.chunks[(x, y)] for x in range(0, width) for y in range(0, height)}
 
-	# Gets all chunks in view based upon the camera offset and viewing size
-	def get_rendered(self, camera_offset: list):
-		offset = pxl_to_chunk(camera_offset)
-		for x in range(0, self.chunk_viewport_count[0]):
-			for y in range(0, self.chunk_viewport_count[1]):
-				if (x + offset[0], y + offset[1]) in self.chunks:
-					self.rendered_chunks[(x, y)] = self.chunks[(x + offset[0], y + offset[1])]
-				else:
-					self.rendered_chunks[(x, y)] = Chunk((x, y), scramble(x, y, cts.SEED))
-
+		# A dictionary for the order of iteration when shifting viewable chunks
+		self.chunkshift = {
+			(-1, "x"): range(self.chunk_viewport_count[0] - 1, -1, -1),
+			(0, "x"): range(0, self.chunk_viewport_count[0], 1),
+			(1, "x"): range(0, self.chunk_viewport_count[0], 1),
+			(-1, "y"): range(self.chunk_viewport_count[1] - 1, -1, -1),
+			(0, "y"): range(0, self.chunk_viewport_count[1], 1),
+			(1, "y"): range(0, self.chunk_viewport_count[1], 1)
+		}
+		
+	# Based upon the position of the camera, decides if we need to shift the dict of rendered chunks
 	def update_pos(self, camera_offset: list):
 		first_chunk_x, first_chunk_y = self.rendered_chunks[(0, 0)].pxl_pos
 		final_index = (self.chunk_viewport_count[0] - 1, self.chunk_viewport_count[1] - 1)
 		last_chunk_x, last_chunk_y = self.rendered_chunks[final_index].pxl_pos
-		if (camera_offset[0] < first_chunk_x): # Left unrendered
-			self.shiftchunks(-1, 0)
-		elif (camera_offset[0] + self.viewport_size[0] > last_chunk_x + cts.CHUNKPIXELSIZE[0]): # Right unrendered
+
+		if (camera_offset[0] + self.viewport_size[0] > last_chunk_x + cts.CHUNKPIXELSIZE[0]): # Right unrendered
 			self.shiftchunks(1, 0)
-		elif (camera_offset[1] < first_chunk_y): # Top unrendered
-			self.shiftchunks(0, -1)
+		elif (camera_offset[0] < first_chunk_x): # Left unrendered
+			self.shiftchunks(-1, 0)
 		elif (camera_offset[1] + self.viewport_size[1] > last_chunk_y + cts.CHUNKPIXELSIZE[1]): # Bottom unrendered
 			self.shiftchunks(0, 1)
+		elif (camera_offset[1] < first_chunk_y): # Top unrendered
+			self.shiftchunks(0, -1)
 
+	# Given the dict (grid) of rendered chunks, we move each row or column one step
 	def shiftchunks(self, x: int, y: int):
-		# Given the grid of rendered chunks, we move each row and/or column to the one behind it
-		for col in self.chunkshift_x[x]:
-			for row in self.chunkshift_y[y]:
+		for col in self.chunkshift[(x, "x")]:
+			for row in self.chunkshift[(y, "y")]:
 
 				# Simply shift all the chunks in the rendering dictionary
 				if (col + x, row + y) in self.rendered_chunks:
@@ -123,6 +135,29 @@ class Map:
 				# Lastly, if the chunk isn't in the dict of arrays, create a new chunk
 				self.rendered_chunks[col, row] = Chunk([pos[0] + x, pos[1] + y], scramble(pos[0] + x, pos[1] + y, cts.SEED))
 
+	# Draws each chunk in the rendered dictionary to the screen
 	def draw_to(self, screen: pygame.Surface, camera_offset: list):
 		for chunk in self.rendered_chunks:
 			self.rendered_chunks[chunk].draw_to(screen, camera_offset)
+
+	# Allows for the modification of tiles
+	def modify(self, coordinates: list, change: str):
+		chunk = pxl_to_chunk(coordinates)
+		tile = pxl_to_chunk(coordinates)
+		self.chunks[chunk].modify(tile, change)
+
+	def get_save_dict(self) -> dict:
+		save_list = {}
+		for chunk in self.chunks:
+			if (self.chunks[chunk].get_save_dict() != None):
+				save_list[str(chunk)] = self.chunks[chunk].get_save_dict()
+		if save_list == {}:
+			return None
+		return save_list
+
+
+# chunky = Map("Vretion")
+# chunky.modify((0, 0), (2, 3), "t")
+# chunky.modify((0, 0), (2, 2), "w")
+# chunky.modify((0, 2), (2, 6), "w")
+# print(chunky.get_save_dict())

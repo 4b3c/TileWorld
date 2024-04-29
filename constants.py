@@ -1,4 +1,5 @@
 import pygame
+pygame.init()
 
 # Window
 WINDOWSIZE = (1600, 900)
@@ -17,16 +18,17 @@ ACCELERATION = 0.08
 FRICTION = 0.02
 MAXSPEED = ACCELERATION / FRICTION
 
+# General
 COLORS = {
+    # General colors
 	"light_green": pygame.Color(100, 230, 140),
 	"dark_green": pygame.Color(70, 180, 110),
 	"light_blue": pygame.Color(100, 170, 230),
 	"light_grey": pygame.Color(40, 40, 40),
-	"player": pygame.Color(123, 13, 12)
+	# Player
+	"player": pygame.Color(120, 30, 10),
+	# Tile modificiations
+    "w": pygame.Color(70, 70, 80),
+    "t": pygame.Color(50, 190, 90)
 }
-
-CHUNKSHIFT = {
-	-1: range(2, -2, -1),
-	0: range(-1, 3, 1),
-	1: range(-1, 3, 1)
-}
+FONT = pygame.font.Font(None, 36)

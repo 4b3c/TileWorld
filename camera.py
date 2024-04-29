@@ -17,8 +17,8 @@ class Camera:
 		self.follow.update_pos(cts.FRICTION)
 		self.centerpos = [self.follow.pos[0] + self.follow.size[0], self.follow.pos[1] + self.follow.size[1]]
 		self.pos = [self.centerpos[0] - cts.CENTER[0], self.centerpos[1] - cts.CENTER[1]]
+		# self.pos = [0, 0] # For debugging purposes
 		self.world.update_pos(self.pos)
-		# self.pos = [0, 0]
 
 	def draw_scene(self, screen: pygame.Surface):
 		screen.fill(cts.COLORS["light_blue"])
