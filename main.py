@@ -28,12 +28,16 @@ while running:
 	mousePressed = pygame.mouse.get_pressed()
 	keypresses = pygame.key.get_pressed()
 
+	if mousePressed[0]:
+		for chunk in world.rendered_chunks:
+			print(chunk, world.rendered_chunks[chunk])
+
 	if (keypresses[pygame.K_w] or keypresses[pygame.K_UP]): character.accelerate(0.0, -cts.ACCELERATION);
 	if (keypresses[pygame.K_s] or keypresses[pygame.K_DOWN]): character.accelerate(0.0, cts.ACCELERATION)
 	if (keypresses[pygame.K_a] or keypresses[pygame.K_LEFT]): character.accelerate(-cts.ACCELERATION, 0.0)
 	if (keypresses[pygame.K_d] or keypresses[pygame.K_RIGHT]): character.accelerate(cts.ACCELERATION, 0.0)
 		
-	main_camera.update_pos()
+	main_camera.update_scene()
 	main_camera.draw_scene(window)
 	pygame.display.update()
 
