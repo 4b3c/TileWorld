@@ -13,8 +13,7 @@ class GameObject:
 		self.surface.fill(color)
 
 	def move(self, x: float, y: float):
-		self.pos[0] += x
-		self.pos[1] += y
+		self.pos = cts.add(self.pos, [x, y])
 
 	def draw_to(self, screen: pygame.Surface, camera_offset: list):
 		screen.blit(self.surface, (round(self.pos[0] - camera_offset[0]), round(self.pos[1] - camera_offset[1])))
@@ -27,19 +26,16 @@ class VelocityObject(GameObject):
 		self.vel = vel
 
 	def accelerate(self, x: float, y: float):
-		self.vel[0] = self.vel[0] + x
-		self.vel[1] = self.vel[1] + y
+		self.vel = cts.add(self.vel, [x, y])
 
 		velmag = math.sqrt(self.vel[0]**2 + self.vel[1]**2)
 		if (velmag > cts.MAXSPEED):
-			self.vel[0] = self.vel[0] * cts.MAXSPEED / velmag
-			self.vel[1] = self.vel[1] * cts.MAXSPEED / velmag
+			normal = cts.MAXSPEED / velmag
+			self.vel = cts.multiply(self.vel, (normal, normal))
 
 	def update_pos(self, friction: float):
 		self.move(self.vel[0], self.vel[1])
-
-		self.vel[0] *= (1 - friction)
-		self.vel[1] *= (1 - friction)
+		self.vel = cts.multiply(self.vel, (1 - friction, 1 - friction))
 
 
 class Player(VelocityObject):

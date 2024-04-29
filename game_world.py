@@ -35,7 +35,7 @@ class Chunk:
 		self.pos = pos
 		self.chunk_id = chunk_id
 		self.size = cts.CHUNKSIZE
-		self.pxl_pos =  (cts.CHUNKPIXELSIZE[0] * self.pos[0], cts.CHUNKPIXELSIZE[1] * self.pos[1])
+		self.pxl_pos = cts.multiply(cts.CHUNKPIXELSIZE, self.pos)
 		self.tiles = {(x, y): Tile(scramble(x, y, chunk_id)) for x in range(self.size[0]) for y in range(self.size[1])}
 
 		self.surface = pygame.Surface(cts.CHUNKPIXELSIZE)
@@ -56,7 +56,7 @@ class Chunk:
 
 	# Draws the chunk to a given screen
 	def draw_to(self, screen: pygame.Surface, camera_offset: list):
-		screen.blit(self.surface, (self.pxl_pos[0] - camera_offset[0], self.pxl_pos[1] - camera_offset[1]))
+		screen.blit(self.surface, cts.subtract(self.pxl_pos, camera_offset))
 	
 	# Allows for the modification of tiles
 	def modify(self, tile: Tile, change: str):
@@ -79,7 +79,7 @@ class Chunk:
 class Map:
 
 	def __init__(self, savefile: str):
-		self.savefile = savefile
+		self.savefile = savefile + ".json"
 		self.viewport_size = cts.WINDOWSIZE
 		width, height = pxl_to_chunk(self.viewport_size)
 		width += 2
@@ -116,7 +116,7 @@ class Map:
 	# Based upon the position of the camera, decides if we need to shift the dict of rendered chunks
 	def update_pos(self, camera_offset: list):
 		first_chunk_x, first_chunk_y = self.rendered_chunks[(0, 0)].pxl_pos
-		final_index = (self.chunk_viewport_count[0] - 1, self.chunk_viewport_count[1] - 1)
+		final_index = tuple(cts.subtract(self.chunk_viewport_count, (1, 1)))
 		last_chunk_x, last_chunk_y = self.rendered_chunks[final_index].pxl_pos
 
 		if (camera_offset[0] + self.viewport_size[0] > last_chunk_x + cts.CHUNKPIXELSIZE[0]): # Right unrendered
@@ -155,8 +155,7 @@ class Map:
 	# Allows for the modification of tiles
 	def modify(self, coordinates: list, change: str):
 		chunk = pxl_to_chunk(coordinates)
-		tile_x, tile_y = pxl_to_tile(coordinates)
-		tile = (tile_x - (chunk[0] * cts.CHUNKSIZE[0]), tile_y - (chunk[1] * cts.CHUNKSIZE[1]))
+		tile = tuple(cts.subtract(pxl_to_tile(coordinates), cts.multiply(chunk, cts.CHUNKSIZE)))
 		self.chunks[chunk].modify(tile, change)
 
 	def save_to_file(self) -> dict:

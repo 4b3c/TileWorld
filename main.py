@@ -30,7 +30,7 @@ while (running):
 	keypresses = pygame.key.get_pressed()
 
 	if (mousePressed[0] and not mouseDown):
-		world.modify((mousePos[0] + main_camera.pos[0], mousePos[1] + main_camera.pos[1]), "w")
+		world.modify(cts.add(mousePos, main_camera.pos), "w")
 		mouseDown = True
 	elif (mouseDown and not mousePressed[0]):
 		mouseDown = False

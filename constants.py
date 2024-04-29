@@ -34,6 +34,18 @@ COLORS = {
 
 FONT = pygame.font.Font(None, 36)
 
+def add(list1, list2):
+	return [x + y for x, y in zip(list1, list2)]
+
+def subtract(list1, list2):
+	return [x - y for x, y in zip(list1, list2)]
+
+def multiply(list1, list2):
+	return [x * y for x, y in zip(list1, list2)]
+
+def divide(list1, list2):
+	return [x / y for x, y in zip(list1, list2)]
+
 def str_to_tuple(string: str):
     try:
         return int(string[1:string.index(",")]), int(string[string.index(" "):-1])
