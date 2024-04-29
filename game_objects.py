@@ -43,3 +43,27 @@ class Player(VelocityObject):
 	def __init__(self, name: str) -> None:
 		super().__init__([0.0, 0.0], cts.PLAYERSIZE, cts.COLORS["player"], [0.0, 0.0])
 		self.name = name
+
+	# Check collision between player and obstacles (TODO fix this)
+	def check_collision(self, squares, camera_x, camera_y):
+		for square in squares:
+			if player_rect.colliderect(square):
+				# Calculate the direction of the collision
+				dx = player_rect.centerx - square.centerx
+				dy = player_rect.centery - square.centery
+
+				if debugprint:
+					print(dx, dy)
+
+				# Adjust camera position based on collision direction
+				if abs(dx) > abs(dy):
+					if dx > 0: # Player moving left
+						camera_x += player_rect.x - square.right
+					else: # Player moving right
+						camera_x -= square.left - player_rect.right
+				else:
+					if dy > 0: # Player moving up
+						camera_y += player_rect.y - square.bottom
+					else: # Player moving down
+						camera_y -= square.top - player_rect.bottom
+		return camera_x, camera_y
