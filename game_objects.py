@@ -49,14 +49,16 @@ class VelocityObject(GameObject):
 				# Get amount of overlap and move the object back by that amount
 				if abs(dx) > abs(dy):
 					if dx > 0: # Player moving left
-						self.move(obstacle.right - rect.left, 0)
+						self.move(obstacle.right - self.pos[0], 0)
 					else: # Player moving right
-						self.move(obstacle.left - rect.right, 0)
+						self.move((self.pos[0] + self.size[0]) - obstacle.left, 0)
+					self.vel[0] = 0.0
 				else:
 					if dy > 0: # Player moving up
-						self.move(0, obstacle.bottom - rect.top)
+						self.move(0, obstacle.bottom - self.pos[1])
 					else: # Player moving down
-						self.move(0, obstacle.top - rect.bottom)
+						self.move(0, (self.pos[1] + self.size[1]) - obstacle.top)
+					self.vel[1] = 0.0
 
 
 class Player(VelocityObject):

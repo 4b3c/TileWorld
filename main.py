@@ -8,7 +8,6 @@ from camera import Camera
 pygame.init()
 clock = pygame.time.Clock()
 last_time = time.time()
-game_loops = 0
 
 window = pygame.display.set_mode(cts.WINDOWSIZE)
 pygame.display.set_caption("TileWorld")
@@ -24,6 +23,8 @@ mousePos = pygame.mouse.get_pos()
 mouseDown = False
 
 print("Starting...")
+game_loops = 0
+
 while (running):
 	lastPos = mousePos
 	mousePos = pygame.mouse.get_pos()

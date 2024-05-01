@@ -10,14 +10,19 @@ def scramble(x: int, y: int, z: int) -> int:
 def pxl_to_chunk(coordinates: list) -> tuple:
 	return (int(coordinates[0] // cts.CHUNKPIXELSIZE[0]), int(coordinates[1] // cts.CHUNKPIXELSIZE[1]))
 
+def chunk_to_pxl(coordinates: list) -> tuple:
+	return (int(coordinates[0] * cts.CHUNKPIXELSIZE[0]), int(coordinates[1] * cts.CHUNKPIXELSIZE[1]))
+
 def pxl_to_tile(coordinates: list) -> tuple:
 	return (int(coordinates[0] // cts.TILESIZE), int(coordinates[1] // cts.TILESIZE))
+
+def tile_to_pxl(coordinates: list) -> tuple:
+	return (int(coordinates[0] * cts.TILESIZE), int(coordinates[1] * cts.TILESIZE))
 
 
 class Tile:
 
 	def __init__(self, tile_id: int):
-		print(tile_id)
 		self.tile_id = tile_id
 		if (tile_id % 10 < 4):
 			self.color = (130, 170, 70)
@@ -76,6 +81,14 @@ class Chunk:
 		if save_list == {}:
 			return None
 		return save_list
+	
+	def obstacles(self) -> list:
+		obstacle_list = []
+		for tile in self.tiles:
+			if (self.tiles[tile].changes != None):
+				tile_x, tile_y = cts.add(tile_to_pxl(tile), self.pxl_pos)
+				obstacle_list.append(pygame.Rect(tile_x, tile_y, cts.TILESIZE, cts.TILESIZE))
+		return obstacle_list
 
 
 
@@ -95,6 +108,8 @@ class Map:
 		# each rendered_chunks key corresponds to a chunk's position within the viewport, not its actual position
 		self.chunks = {(x, y): Chunk((x, y), scramble(x, y, cts.SEED)) for x in range(-8, 8) for y in range(-8, 8)}
 		self.rendered_chunks = {(x, y): self.chunks[(x, y)] for x in range(0, width) for y in range(0, height)}
+		self.obstacles = []
+		self.update_obstacles()
 
 		# A dictionary for the order of iteration when shifting viewable chunks
 		self.chunkshift = {
@@ -146,6 +161,7 @@ class Map:
 				pos = self.rendered_chunks[col, row].pos
 				if (pos[0] + x, pos[1] + y) in self.chunks:
 					self.rendered_chunks[col, row] = self.chunks[pos[0] + x, pos[1] + y]
+					self.update_obstacles()
 					continue
 
 				# Lastly, if the chunk isn't in the dict of arrays, create a new chunk
@@ -169,3 +185,9 @@ class Map:
 				save_list[str(chunk)] = self.chunks[chunk].get_save_dict()
 		with open(cts.SAVEFOLDER + self.savefile, 'w') as f:
 			json.dump(save_list, f, indent = 1)
+
+	def update_obstacles(self):
+		# self.obstacles = []
+		# for chunk in self.chunks:
+		# 	self.obstacles += chunk.obstacles()
+		self.obstacles = [obstacle for chunk in self.rendered_chunks for obstacle in self.rendered_chunks[chunk].obstacles()]

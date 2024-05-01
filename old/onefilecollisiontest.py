@@ -34,6 +34,10 @@ debugprint = False
 def generate_squares():
 	return [pygame.Rect(rint(0, WIDTH), rint(0, HEIGHT), square_size, square_size) for _ in range(10)]
 
+# Generate non random squares
+def generate_cool_squares(pos):
+	return [pygame.Rect(10 + i * square_size, pos, square_size, square_size) for i in range(10)]
+
 def move_squares(x_dist, y_dist):
 	return [pygame.Rect(sq.x + x_dist, sq.y + y_dist, sq.width, sq.height) for sq in squares]
 
@@ -51,19 +55,19 @@ def check_collision(squares, camera_x, camera_y):
 			# Adjust camera position based on collision direction
 			if abs(dx) > abs(dy):
 				if dx > 0: # Player moving left
-					camera_x += player_rect.x - square.right
+					camera_x -= square.right - player_rect.left
 				else: # Player moving right
 					camera_x -= square.left - player_rect.right
 			else:
 				if dy > 0: # Player moving up
-					camera_y += player_rect.y - square.bottom
+					camera_y -= square.bottom - player_rect.top
 				else: # Player moving down
 					camera_y -= square.top - player_rect.bottom
 	return camera_x, camera_y
 
 # Main game loop
 running = True
-squares = generate_squares()
+squares = generate_cool_squares(100) + generate_cool_squares(600)
 while running:
 	# Event handling
 	for event in pygame.event.get():
@@ -85,7 +89,8 @@ while running:
 	if keys[pygame.K_d]: camera_x -= player_speed
 
 	# Create potential object rects, then undo movements if collided
-	camera_x, camera_y = check_collision(move_squares(camera_x, camera_y), camera_x, camera_y)
+	potential_obstacles = move_squares(camera_x, camera_y)
+	camera_x, camera_y = check_collision(potential_obstacles, camera_x, camera_y)
 	
 	# Draw everything
 	screen.fill(WHITE)
