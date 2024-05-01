@@ -37,33 +37,30 @@ class VelocityObject(GameObject):
 		self.move(self.vel[0], self.vel[1])
 		self.vel = cts.multiply(self.vel, (1 - friction, 1 - friction))
 
+	# Check collision between an object and obstacles
+	def check_collision(self, obstacles: list):
+		rect = pygame.Rect(self.pos[0], self.pos[1], self.size[0], self.size[1])
+		for obstacle in obstacles:
+			if rect.colliderect(obstacle):
+				# Calculate the direction of the collision
+				dx = rect.centerx - obstacle.centerx
+				dy = rect.centery - obstacle.centery
+
+				# Get amount of overlap and move the object back by that amount
+				if abs(dx) > abs(dy):
+					if dx > 0: # Player moving left
+						self.move(obstacle.right - rect.left, 0)
+					else: # Player moving right
+						self.move(obstacle.left - rect.right, 0)
+				else:
+					if dy > 0: # Player moving up
+						self.move(0, obstacle.bottom - rect.top)
+					else: # Player moving down
+						self.move(0, obstacle.top - rect.bottom)
+
 
 class Player(VelocityObject):
 
 	def __init__(self, name: str) -> None:
 		super().__init__([0.0, 0.0], cts.PLAYERSIZE, cts.COLORS["player"], [0.0, 0.0])
 		self.name = name
-
-	# Check collision between player and obstacles (TODO fix this)
-	def check_collision(self, squares, camera_x, camera_y):
-		for square in squares:
-			if player_rect.colliderect(square):
-				# Calculate the direction of the collision
-				dx = player_rect.centerx - square.centerx
-				dy = player_rect.centery - square.centery
-
-				if debugprint:
-					print(dx, dy)
-
-				# Adjust camera position based on collision direction
-				if abs(dx) > abs(dy):
-					if dx > 0: # Player moving left
-						camera_x += player_rect.x - square.right
-					else: # Player moving right
-						camera_x -= square.left - player_rect.right
-				else:
-					if dy > 0: # Player moving up
-						camera_y += player_rect.y - square.bottom
-					else: # Player moving down
-						camera_y -= square.top - player_rect.bottom
-		return camera_x, camera_y

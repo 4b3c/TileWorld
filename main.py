@@ -6,6 +6,7 @@ from game_world import Map, pxl_to_tile
 from camera import Camera
 
 pygame.init()
+clock = pygame.time.Clock()
 last_time = time.time()
 game_loops = 0
 
@@ -55,3 +56,5 @@ while (running):
 			world.save_to_file()
 			pygame.quit()
 			quit()
+
+	clock.tick(60)

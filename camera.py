@@ -17,7 +17,7 @@ class Camera:
 		self.follow.update_pos(cts.FRICTION)
 		self.centerpos = cts.add(self.follow.pos, self.follow.size)
 		self.pos = cts.subtract(self.centerpos, cts.CENTER)
-		self.pos = cts.subtract(self.pos, self.follow.vel * 6)
+		self.pos = cts.subtract(self.pos, cts.multiply(self.follow.vel, (2, 2)))
 		# self.pos = [0, 0] # For debugging purposes
 		self.world.update_pos(self.pos)
 

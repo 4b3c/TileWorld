@@ -17,8 +17,12 @@ def pxl_to_tile(coordinates: list) -> tuple:
 class Tile:
 
 	def __init__(self, tile_id: int):
+		print(tile_id)
 		self.tile_id = tile_id
-		self.color = (tile_id % 255, 120, 160)
+		if (tile_id % 10 < 4):
+			self.color = (130, 170, 70)
+		else:
+			self.color = (240, 210, 130)
 		self.changes = None
 	
 	# changes is a string containing all the modifications made to the tile in order 
