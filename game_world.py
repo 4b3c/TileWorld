@@ -37,6 +37,9 @@ class Tile:
 		else:
 			self.changes += change
 
+	def demodify(self):
+		self.changes = None
+
 
 class Chunk:
 
@@ -72,6 +75,11 @@ class Chunk:
 		ts = cts.TILESIZE
 		self.tiles[tile].modify(change)
 		pygame.draw.rect(self.surface, cts.COLORS[change], (tile[0] * ts, tile[1] * ts, ts, ts))
+
+	def demodify(self, tile: Tile):
+		ts = cts.TILESIZE
+		self.tiles[tile].demodify()
+		pygame.draw.rect(self.surface, self.tiles[tile].color, (tile[0] * ts, tile[1] * ts, ts, ts))
 
 	def get_save_dict(self) -> dict:
 		save_list = {}
@@ -177,6 +185,12 @@ class Map:
 		chunk = pxl_to_chunk(coordinates)
 		tile = tuple(cts.subtract(pxl_to_tile(coordinates), cts.multiply(chunk, cts.CHUNKSIZE)))
 		self.chunks[chunk].modify(tile, change)
+		self.update_obstacles()
+
+	def demodify(self, coordinates: list):
+		chunk = pxl_to_chunk(coordinates)
+		tile = tuple(cts.subtract(pxl_to_tile(coordinates), cts.multiply(chunk, cts.CHUNKSIZE)))
+		self.chunks[chunk].demodify(tile)
 		self.update_obstacles()
 
 	def save_to_file(self) -> dict:

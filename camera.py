@@ -22,7 +22,7 @@ class Camera:
 
 		self.centerpos = cts.add(self.follow.pos, cts.divide(self.follow.size, (2, 2)))
 		self.pos = cts.subtract(self.centerpos, cts.CENTER)
-		self.pos = cts.subtract(self.pos, cts.multiply(self.follow.vel, (3, 3)))
+		self.pos = cts.subtract(self.pos, self.follow.vel)
 		# self.pos = [0, 0] # For debugging purposes
 		self.world.update_pos(self.pos)
 

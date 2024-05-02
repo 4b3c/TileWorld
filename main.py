@@ -15,7 +15,7 @@ running = True
 
 character = Player("Reza")
 chunk_id_current = 82234
-world = Map("Lemr")
+world = Map("Weaven")
 main_camera = Camera(character, world)
 
 
@@ -34,7 +34,10 @@ while (running):
 	if (mousePressed[0] and not mouseDown):
 		world.modify(cts.add(mousePos, main_camera.pos), "w")
 		mouseDown = True
-	elif (mouseDown and not mousePressed[0]):
+	elif (mousePressed[2] and not mouseDown):
+		world.demodify(cts.add(mousePos, main_camera.pos))
+		mouseDown = True
+	elif (mouseDown and not mousePressed[0] and not mousePressed[2]):
 		mouseDown = False
 
 	if (keypresses[pygame.K_w] or keypresses[pygame.K_UP]): character.accelerate(0.0, -cts.ACCELERATION)
