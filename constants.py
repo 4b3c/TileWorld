@@ -7,7 +7,7 @@ CENTER = (WINDOWSIZE[0] / 2, WINDOWSIZE[1] / 2)
 
 # World
 CHUNKSIZE = (8, 8)
-TILESIZE = 80
+TILESIZE = 50
 CHUNKPIXELSIZE = (CHUNKSIZE[0] * TILESIZE, CHUNKSIZE[1] * TILESIZE)
 SEED = 2763492
 SAVEFOLDER = "worlds/"
@@ -25,10 +25,13 @@ COLORS = {
 	"dark_green": pygame.Color(70, 180, 110),
 	"light_blue": pygame.Color(100, 170, 230),
 	"light_grey": pygame.Color(40, 40, 40),
+	"desert_green": pygame.Color(100, 100, 50),
+	"field_green": pygame.Color(130, 170, 70),
+	"sand_tan": pygame.Color(240, 210, 130),
 	# Player
 	"player": pygame.Color(120, 30, 10),
 	# Tile modificiations
-	"w": pygame.Color(40, 40, 40),
+	"w": pygame.Color(70, 70, 70),
 	"t": pygame.Color(50, 190, 90)
 }
 

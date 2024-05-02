@@ -1,10 +1,11 @@
-import pygame
+import pygame, time
 from random import randint as rint
 
 # Initialize Pygame and set up screen
 pygame.init()
 WIDTH, HEIGHT = 900, 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
+last_time = time.time()
 
 # Colors
 WHITE = (255, 255, 255)
@@ -100,6 +101,9 @@ while running:
 	pygame.display.flip()
 
 	pygame.time.Clock().tick(300)
+
+	print(time.time() - last_time)
+	last_time = time.time()
 
 # Quit Pygame
 pygame.quit()

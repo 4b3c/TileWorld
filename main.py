@@ -5,6 +5,8 @@ from game_objects import Player
 from game_world import Map, pxl_to_tile
 from camera import Camera
 
+from gui import button
+
 pygame.init()
 clock = pygame.time.Clock()
 last_time = time.time()
@@ -18,11 +20,13 @@ chunk_id_current = 82234
 world = Map("Weaven")
 main_camera = Camera(character, world)
 
+build_button = button.ToggleButton([190, 60]).surface
 
 mousePos = pygame.mouse.get_pos()
 mouseDown = False
 
 print("Starting...")
+print("Num of rendered chunks:", len(world.rendered_chunks))
 game_loops = 0
 
 while (running):
@@ -47,6 +51,7 @@ while (running):
 		
 	main_camera.update_scene()
 	main_camera.draw_scene(window)
+	window.blit(build_button, (20, 20))
 	pygame.display.update()
 
 	game_loops += 1
