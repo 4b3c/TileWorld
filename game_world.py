@@ -177,6 +177,7 @@ class Map:
 		chunk = pxl_to_chunk(coordinates)
 		tile = tuple(cts.subtract(pxl_to_tile(coordinates), cts.multiply(chunk, cts.CHUNKSIZE)))
 		self.chunks[chunk].modify(tile, change)
+		self.update_obstacles()
 
 	def save_to_file(self) -> dict:
 		save_list = {}
@@ -187,7 +188,4 @@ class Map:
 			json.dump(save_list, f, indent = 1)
 
 	def update_obstacles(self):
-		# self.obstacles = []
-		# for chunk in self.chunks:
-		# 	self.obstacles += chunk.obstacles()
 		self.obstacles = [obstacle for chunk in self.rendered_chunks for obstacle in self.rendered_chunks[chunk].obstacles()]

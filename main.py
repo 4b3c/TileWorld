@@ -15,7 +15,7 @@ running = True
 
 character = Player("Reza")
 chunk_id_current = 82234
-world = Map("Weaven")
+world = Map("Lemr")
 main_camera = Camera(character, world)
 
 
