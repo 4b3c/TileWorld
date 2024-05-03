@@ -22,7 +22,7 @@ class GameObject:
 
 	# Draws the object to the pygame window
 	def draw_to(self, screen: pygame.Surface, camera_offset: list):
-		screen.blit(self.surface, cts.subtract(self.pos, camera_offset))
+		screen.blit(self.surface, (round(self.pos[0] - camera_offset[0]), round(self.pos[1] - camera_offset[1])))
 
 
 class VelocityObject(GameObject):
@@ -42,19 +42,19 @@ class VelocityObject(GameObject):
 			self.vel = cts.multiply(self.vel, (normal, normal))
 
 	# Moves the object by its velocity, and then applies friction
-	def update_xpos(self, friction: float):
-		self.movex(round(self.vel[0]))
+	def update_xpos(self, friction: float, deltatime: float):
+		self.movex(self.vel[0] * deltatime)
 		self.vel[0] *= (1 - friction)
 
 	# Moves the object by its velocity, and then applies friction
-	def update_ypos(self, friction: float):
-		self.movey(round(self.vel[1]))
+	def update_ypos(self, friction: float, deltatime: float):
+		self.movey(self.vel[1] * deltatime)
 		self.vel[1] *= (1 - friction)
 
 	# Check collision between an object and a list of obstacles
 	def check_collisionx(self, obstacles: list):
 		for obstacle in obstacles:
-			rect = pygame.Rect(self.pos[0], self.pos[1], self.size[0], self.size[1])
+			rect = pygame.Rect(round(self.pos[0]), round(self.pos[1]), self.size[0], self.size[1])
 			if rect.colliderect(obstacle):
 				# Get amount of overlap and move the object back by that amount
 				if (rect.centerx - obstacle.centerx) > 0: # Player moving left
@@ -66,7 +66,7 @@ class VelocityObject(GameObject):
 	# Check collision between an object and a list of obstacles
 	def check_collisiony(self, obstacles: list):
 		for obstacle in obstacles:
-			rect = pygame.Rect(self.pos[0], self.pos[1], self.size[0], self.size[1])
+			rect = pygame.Rect(round(self.pos[0]), round(self.pos[1]), self.size[0], self.size[1])
 			if rect.colliderect(obstacle):
 				# Get amount of overlap and move the object back by that amount
 				if (rect.centery - obstacle.centery) > 0: # Player moving up

@@ -11,16 +11,15 @@ class Camera:
 		self.follow = follow
 		self.world = world
 		self.size = cts.WINDOWSIZE
-		self.update_scene()
 		
-	def update_scene(self):
+	def update_scene(self, deltatime: float):
 		# update the player's position and then check for collisions
-		self.follow.update_xpos(cts.FRICTION)
+		self.follow.update_xpos(cts.FRICTION, deltatime)
 		self.follow.check_collisionx(self.world.obstacles)
-		self.follow.update_ypos(cts.FRICTION)
+		self.follow.update_ypos(cts.FRICTION, deltatime)
 		self.follow.check_collisiony(self.world.obstacles)
 
-		self.centerpos = cts.add(self.follow.pos, cts.divide(self.follow.size, (2, 2)))
+		self.centerpos = cts.add((round(self.follow.pos[0]), round(self.follow.pos[1])), cts.divide(self.follow.size, (2, 2)))
 		self.pos = cts.subtract(self.centerpos, cts.CENTER)
 		# self.pos = cts.subtract(self.pos, self.follow.vel)
 		# self.pos = [0, 0] # For debugging purposes

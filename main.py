@@ -30,6 +30,8 @@ print("Num of rendered chunks:", len(world.rendered_chunks))
 game_loops = 0
 
 while (running):
+	dt = clock.tick(120) / 1000
+
 	lastPos = mousePos
 	mousePos = pygame.mouse.get_pos()
 	mousePressed = pygame.mouse.get_pressed()
@@ -49,10 +51,11 @@ while (running):
 	if (keypresses[pygame.K_a] or keypresses[pygame.K_LEFT]): character.accelerate(-cts.ACCELERATION, 0.0)
 	if (keypresses[pygame.K_d] or keypresses[pygame.K_RIGHT]): character.accelerate(cts.ACCELERATION, 0.0)
 		
-	main_camera.update_scene()
+	main_camera.update_scene(dt)
 	main_camera.draw_scene(window)
 	window.blit(build_button, (20, 20))
 	pygame.display.flip()
+	print(character.pos)
 
 	game_loops += 1
 	if (time.time() - last_time >= 1):
@@ -64,8 +67,6 @@ while (running):
 		if (event.type == pygame.QUIT):
 			world.save_to_file()
 			running = False
-
-	clock.tick(60)
 
 pygame.quit()
 quit()
