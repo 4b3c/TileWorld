@@ -28,6 +28,9 @@ COLORS = {
 	"desert_green": pygame.Color(100, 100, 50),
 	"field_green": pygame.Color(130, 170, 70),
 	"sand_tan": pygame.Color(240, 210, 130),
+	# User interface
+	"ui_brown": pygame.Color(170, 110, 50),
+	"ui_grey": pygame.Color(50, 50, 50),
 	# Player
 	"player": pygame.Color(120, 30, 10),
 	# Tile modificiations

@@ -52,7 +52,7 @@ while (running):
 	main_camera.update_scene()
 	main_camera.draw_scene(window)
 	window.blit(build_button, (20, 20))
-	pygame.display.update()
+	pygame.display.flip()
 
 	game_loops += 1
 	if (time.time() - last_time >= 1):
@@ -63,7 +63,9 @@ while (running):
 	for event in pygame.event.get():
 		if (event.type == pygame.QUIT):
 			world.save_to_file()
-			pygame.quit()
-			quit()
+			running = False
 
 	clock.tick(60)
+
+pygame.quit()
+quit()
