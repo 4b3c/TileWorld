@@ -1,11 +1,20 @@
-from game_world.generation import perlin2d
+from game_world.generation import layered_perlin2d
+import constants as cts
+
 
 class Tile:
 
 	def __init__(self, pos: list):
 		self.pos = pos
-		self.val = (perlin2d(pos[0] / 5, pos[1] / 5) + 1) * 127.5
-		self.color = (self.val, 170, 70)
+		self.val = layered_perlin2d(pos[0] / 50, pos[1] / 50)
+		if (self.val < 0.4):
+			self.color = cts.COLORS["light_blue"]
+		elif (self.val > 0.65):
+			self.color = cts.COLORS["light_grey"]
+		elif (self.val > 0.45):
+			self.color = cts.COLORS["field_green"]
+		else:
+			self.color = cts.COLORS["sand_tan"]
 
 		self.changes = None
 	
