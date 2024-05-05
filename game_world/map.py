@@ -2,103 +2,7 @@ import pygame
 import os
 import json
 import constants as cts
-
-
-def scramble(x: int, y: int, z: int) -> int:
-	return (x + 100) * (y + 200) * (z + 300) % cts.SEED
-
-def pxl_to_chunk(coordinates: list) -> tuple:
-	return (int(coordinates[0] // cts.CHUNKPIXELSIZE[0]), int(coordinates[1] // cts.CHUNKPIXELSIZE[1]))
-
-def chunk_to_pxl(coordinates: list) -> tuple:
-	return (int(coordinates[0] * cts.CHUNKPIXELSIZE[0]), int(coordinates[1] * cts.CHUNKPIXELSIZE[1]))
-
-def pxl_to_tile(coordinates: list) -> tuple:
-	return (int(coordinates[0] // cts.TILESIZE), int(coordinates[1] // cts.TILESIZE))
-
-def tile_to_pxl(coordinates: list) -> tuple:
-	return (int(coordinates[0] * cts.TILESIZE), int(coordinates[1] * cts.TILESIZE))
-
-
-class Tile:
-
-	def __init__(self, tile_id: int):
-		self.tile_id = tile_id
-		if (tile_id % 10 < 4):
-			self.color = (130, 170, 70)
-		else:
-			self.color = (240, 210, 130)
-		self.changes = None
-	
-	# changes is a string containing all the modifications made to the tile in order 
-	def modify(self, change: str):
-		if (self.changes == None):
-			self.changes = change
-		else:
-			self.changes += change
-
-	def demodify(self):
-		self.changes = None
-
-
-class Chunk:
-
-	def __init__(self, pos: list, chunk_id: int):
-		self.pos = pos
-		self.chunk_id = chunk_id
-		self.size = cts.CHUNKSIZE
-		self.pxl_pos = cts.multiply(cts.CHUNKPIXELSIZE, self.pos)
-		self.tiles = {(x, y): Tile(scramble(x, y, chunk_id)) for x in range(self.size[0]) for y in range(self.size[1])}
-
-		self.surface = pygame.Surface(cts.CHUNKPIXELSIZE)
-		self.generate_surface()
-
-	# Generates the pygame surface used for displaying to the screen
-	def generate_surface(self):
-		ts = cts.TILESIZE
-		for tile in self.tiles:
-			pygame.draw.rect(self.surface, self.tiles[tile].color, (tile[0] * ts, tile[1] * ts, ts, ts))
-
-		# Add border and coordinate text for debugging purposes
-		# pygame.draw.rect(self.surface, (40, 40, 40), (0, 0, cts.CHUNKPIXELSIZE[0], cts.CHUNKPIXELSIZE[0]), 2)
-		# text_surface = cts.FONT.render(str(self.pos), True, (40, 40, 40))
-		# text_rect = text_surface.get_rect()
-		# text_rect.topleft = (15, 15)
-		# self.surface.blit(text_surface, text_rect)
-
-	# Draws the chunk to a given screen
-	def draw_to(self, screen: pygame.Surface, camera_offset: list):
-		screen.blit(self.surface, cts.subtract(self.pxl_pos, camera_offset))
-	
-	# Allows for the modification of tiles
-	def modify(self, tile: Tile, change: str):
-		ts = cts.TILESIZE
-		self.tiles[tile].modify(change)
-		pygame.draw.rect(self.surface, cts.COLORS[change], (tile[0] * ts, tile[1] * ts, ts, ts))
-
-	def demodify(self, tile: Tile):
-		ts = cts.TILESIZE
-		self.tiles[tile].demodify()
-		pygame.draw.rect(self.surface, self.tiles[tile].color, (tile[0] * ts, tile[1] * ts, ts, ts))
-
-	def get_save_dict(self) -> dict:
-		save_list = {}
-		for tile in self.tiles:
-			if (self.tiles[tile].changes != None):
-				save_list[str(tile)] = self.tiles[tile].changes
-		if save_list == {}:
-			return None
-		return save_list
-	
-	def obstacles(self) -> list:
-		obstacle_list = []
-		for tile in self.tiles:
-			if (self.tiles[tile].changes != None):
-				tile_x, tile_y = cts.add(tile_to_pxl(tile), self.pxl_pos)
-				obstacle_list.append(pygame.Rect(tile_x, tile_y, cts.TILESIZE, cts.TILESIZE))
-		return obstacle_list
-
-
+from game_world.chunk import Chunk
 
 
 class Map:
@@ -106,7 +10,7 @@ class Map:
 	def __init__(self, savefile: str):
 		self.savefile = savefile + ".json"
 		self.viewport_size = cts.WINDOWSIZE
-		width, height = pxl_to_chunk(self.viewport_size)
+		width, height = cts.pxl_to_chunk(self.viewport_size)
 		width += 2
 		height += 2
 		self.chunk_viewport_count = (width, height)
@@ -114,7 +18,7 @@ class Map:
 		# chunks is a dictionary of chunks where each key corresponds to the chunk at that location
 		# rendered_chunks is a dictionary of viewable (or nearly in frame) chunks
 		# each rendered_chunks key corresponds to a chunk's position within the viewport, not its actual position
-		self.chunks = {(x, y): Chunk((x, y), scramble(x, y, cts.SEED)) for x in range(-8, 8) for y in range(-8, 8)}
+		self.chunks = {(x, y): Chunk((x, y)) for x in range(-4, 4) for y in range(-4, 4)}
 		self.rendered_chunks = {(x, y): self.chunks[(x, y)] for x in range(0, width) for y in range(0, height)}
 		self.obstacles = []
 		self.update_obstacles()
@@ -135,7 +39,7 @@ class Map:
 			for chunk in chunkedits:
 				tuple_chunk = cts.str_to_tuple(chunk)
 				if (tuple_chunk not in self.chunks):
-					self.chunks[tuple_chunk] = Chunk(tuple_chunk, cts.SEED)
+					self.chunks[tuple_chunk] = Chunk(tuple_chunk)
 				for edit in chunkedits[chunk]:
 					self.chunks[tuple_chunk].modify(cts.str_to_tuple(edit), chunkedits[chunk][edit])
 
@@ -173,7 +77,7 @@ class Map:
 					continue
 
 				# Lastly, if the chunk isn't in the dict of arrays, create a new chunk
-				self.rendered_chunks[col, row] = Chunk([pos[0] + x, pos[1] + y], scramble(pos[0] + x, pos[1] + y, cts.SEED))
+				self.rendered_chunks[col, row] = Chunk([pos[0] + x, pos[1] + y])
 
 	# Draws each chunk in the rendered dictionary to the screen
 	def draw_to(self, screen: pygame.Surface, camera_offset: list):
@@ -182,14 +86,14 @@ class Map:
 
 	# Allows for the modification of tiles
 	def modify(self, coordinates: list, change: str):
-		chunk = pxl_to_chunk(coordinates)
-		tile = tuple(cts.subtract(pxl_to_tile(coordinates), cts.multiply(chunk, cts.CHUNKSIZE)))
+		chunk = cts.pxl_to_chunk(coordinates)
+		tile = tuple(cts.subtract(cts.pxl_to_tile(coordinates), cts.multiply(chunk, cts.CHUNKSIZE)))
 		self.chunks[chunk].modify(tile, change)
 		self.update_obstacles()
 
 	def demodify(self, coordinates: list):
-		chunk = pxl_to_chunk(coordinates)
-		tile = tuple(cts.subtract(pxl_to_tile(coordinates), cts.multiply(chunk, cts.CHUNKSIZE)))
+		chunk = cts.pxl_to_chunk(coordinates)
+		tile = tuple(cts.subtract(cts.pxl_to_tile(coordinates), cts.multiply(chunk, cts.CHUNKSIZE)))
 		self.chunks[chunk].demodify(tile)
 		self.update_obstacles()
 

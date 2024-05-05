@@ -7,15 +7,15 @@ CENTER = (WINDOWSIZE[0] / 2, WINDOWSIZE[1] / 2)
 
 # World
 CHUNKSIZE = (8, 8)
-TILESIZE = 50
+TILESIZE = 80
 CHUNKPIXELSIZE = (CHUNKSIZE[0] * TILESIZE, CHUNKSIZE[1] * TILESIZE)
 SEED = 2763492
 SAVEFOLDER = "worlds/"
 
 # Player
 PLAYERSIZE = (60, 60)
-ACCELERATION = 20
-FRICTION = 0.03
+ACCELERATION = 30
+FRICTION = 0.08
 MAXSPEED = ACCELERATION / FRICTION
 
 # General
@@ -58,3 +58,16 @@ def str_to_tuple(string: str):
     except:
         print(string)
         quit()
+
+
+def pxl_to_chunk(coordinates: list) -> tuple:
+	return (int(coordinates[0] // CHUNKPIXELSIZE[0]), int(coordinates[1] // CHUNKPIXELSIZE[1]))
+
+def chunk_to_pxl(coordinates: list) -> tuple:
+	return (int(coordinates[0] * CHUNKPIXELSIZE[0]), int(coordinates[1] * CHUNKPIXELSIZE[1]))
+
+def pxl_to_tile(coordinates: list) -> tuple:
+	return (int(coordinates[0] // TILESIZE), int(coordinates[1] // TILESIZE))
+
+def tile_to_pxl(coordinates: list) -> tuple:
+	return (int(coordinates[0] * TILESIZE), int(coordinates[1] * TILESIZE))

@@ -1,11 +1,10 @@
 import pygame
 import time
 import constants as cts
-from game_objects import Player
-from game_world import Map, pxl_to_tile
+from game_objects.player import Player
+from game_world.map import Map
 from camera import Camera
 
-from gui import button
 
 pygame.init()
 clock = pygame.time.Clock()
@@ -16,11 +15,8 @@ pygame.display.set_caption("TileWorld")
 running = True
 
 character = Player("Reza")
-chunk_id_current = 82234
 world = Map("Weaven")
 main_camera = Camera(character, world)
-
-build_button = button.ToggleButton([190, 60]).surface
 
 mousePos = pygame.mouse.get_pos()
 mouseDown = False
@@ -53,9 +49,7 @@ while (running):
 		
 	main_camera.update_scene(dt)
 	main_camera.draw_scene(window)
-	window.blit(build_button, (20, 20))
 	pygame.display.flip()
-	print(character.pos)
 
 	game_loops += 1
 	if (time.time() - last_time >= 1):

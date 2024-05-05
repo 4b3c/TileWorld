@@ -1,7 +1,7 @@
 import pygame
 import constants as cts
-from game_objects import VelocityObject
-from game_world import Map
+from game_objects.velocityobject import VelocityObject
+from game_world.map import Map
 
 
 
