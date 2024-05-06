@@ -7,14 +7,17 @@ class Tile:
 	def __init__(self, pos: list):
 		self.pos = pos
 		self.val = layered_perlin2d(pos[0] / 50, pos[1] / 50)
-		if (self.val < 0.4):
-			self.color = cts.COLORS["light_blue"]
+		lightvdark = (pos[0] + pos[1]) % 2
+		if (self.val > 0.7):
+			self.color = cts.COLORS["stone_grey"][lightvdark]
 		elif (self.val > 0.65):
-			self.color = cts.COLORS["light_grey"]
+			self.color = cts.COLORS["forrest_green"][lightvdark]
 		elif (self.val > 0.45):
-			self.color = cts.COLORS["field_green"]
+			self.color = cts.COLORS["field_green"][lightvdark]
+		elif (self.val > 0.4):
+			self.color = cts.COLORS["sand_tan"][lightvdark]
 		else:
-			self.color = cts.COLORS["sand_tan"]
+			self.color = cts.COLORS["water_blue"][lightvdark]
 
 		self.changes = None
 	

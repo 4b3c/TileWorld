@@ -7,13 +7,13 @@ CENTER = (WINDOWSIZE[0] / 2, WINDOWSIZE[1] / 2)
 
 # World
 CHUNKSIZE = (8, 8)
-TILESIZE = 80
+TILESIZE = 64
 CHUNKPIXELSIZE = (CHUNKSIZE[0] * TILESIZE, CHUNKSIZE[1] * TILESIZE)
 SEED = 2763492
 SAVEFOLDER = "worlds/"
 
 # Player
-PLAYERSIZE = (60, 60)
+PLAYERSIZE = (50, 50)
 ACCELERATION = 60
 FRICTION = 0.08
 MAXSPEED = ACCELERATION / FRICTION
@@ -21,20 +21,18 @@ MAXSPEED = ACCELERATION / FRICTION
 # General
 COLORS = {
 	# General colors
-	"light_green": pygame.Color(100, 230, 140),
-	"dark_green": pygame.Color(70, 180, 110),
-	"light_blue": pygame.Color(100, 170, 230),
-	"light_grey": pygame.Color(40, 40, 40),
-	"desert_green": pygame.Color(100, 100, 50),
-	"field_green": pygame.Color(130, 170, 70),
-	"sand_tan": pygame.Color(240, 210, 130),
+	"field_green": (pygame.Color(130, 170, 70), pygame.Color(110, 150, 50)),
+	"forrest_green": (pygame.Color(70, 120, 60), pygame.Color(50, 100, 40)),
+	"water_blue": (pygame.Color(100, 170, 230), pygame.Color(80, 150, 210)),
+	"stone_grey": (pygame.Color(120, 120, 120), pygame.Color(100, 100, 100)),
+	"sand_tan": (pygame.Color(240, 210, 130), pygame.Color(220, 190, 110)),
 	# User interface
 	"ui_brown": pygame.Color(170, 110, 50),
 	"ui_grey": pygame.Color(50, 50, 50),
 	# Player
 	"player": pygame.Color(120, 30, 10),
 	# Tile modificiations
-	"w": pygame.Color(70, 70, 70),
+	"w": pygame.Color(80, 80, 80),
 	"t": pygame.Color(50, 190, 90)
 }
 

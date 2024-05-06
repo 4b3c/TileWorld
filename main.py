@@ -15,7 +15,7 @@ pygame.display.set_caption("TileWorld")
 running = True
 
 character = Player("Reza")
-world = Map("Weaven")
+world = Map("Belfer")
 main_camera = Camera(character, world)
 
 mousePos = pygame.mouse.get_pos()

@@ -26,6 +26,6 @@ class Camera:
 		self.world.update_pos(self.pos)
 
 	def draw_scene(self, screen: pygame.Surface):
-		screen.fill(cts.COLORS["light_blue"])
+		screen.fill(cts.COLORS["water_blue"][0])
 		self.world.draw_to(screen, self.pos)
 		self.follow.draw_to(screen, self.pos)
