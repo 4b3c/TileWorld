@@ -31,6 +31,7 @@ COLORS = {
 	"ui_grey": pygame.Color(50, 50, 50),
 	# Player
 	"player": pygame.Color(120, 30, 10),
+	"player_side": pygame.Color(80, 50, 50),
 	# Tile modificiations
 	"w": pygame.Color(80, 80, 80),
 	"t": pygame.Color(50, 190, 90)

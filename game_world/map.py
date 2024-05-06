@@ -36,10 +36,14 @@ class Map:
 		if (self.savefile in os.listdir(cts.SAVEFOLDER)):
 			with open(cts.SAVEFOLDER + self.savefile, 'r') as f:
 				chunkedits = json.load(f)
+			# Iterate over every chunk that has been modified
 			for chunk in chunkedits:
 				tuple_chunk = cts.str_to_tuple(chunk)
+				# Create it, if it isnt in the defaultly loaded ones
 				if (tuple_chunk not in self.chunks):
 					self.chunks[tuple_chunk] = Chunk(tuple_chunk)
+				# Generate all it's tiles so we can modify them correctly
+				self.chunks[tuple_chunk].load_all_tiles()
 				for edit in chunkedits[chunk]:
 					self.chunks[tuple_chunk].modify(cts.str_to_tuple(edit), chunkedits[chunk][edit])
 
