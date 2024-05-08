@@ -1,6 +1,6 @@
 import math
 import random
-
+import constants as cts
 
 def smooth(x: float) -> float:
 	return (6 * (x**5)) - (15 * (x**4)) + (10 * (x**3))
@@ -21,7 +21,7 @@ def lerp(t: float, x0: float, x1: float) -> float:
 	return x0 + (t * (x1 - x0))
 
 def gradient_vector(x: int, y: int) -> list:
-	random.seed(z_order(x, y))
+	random.seed(z_order(x, y) + cts.SEED)
 	return [random.uniform(-1, 1), random.uniform(-1, 1)]
 
 def perlin2d(x: float, y: float) -> float:

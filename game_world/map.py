@@ -7,9 +7,10 @@ from game_world.chunk import Chunk
 class Map:
 
 	def __init__(self, savefile: str):
-		self.savefile = savefile + ".json"
+		self.savefile = savefile + "/world.json"
 		# Add 1 chunk because pxl_to_chunk floors value, and add 3 more buffer chunks
 		self.viewport_size = cts.add(cts.pxl_to_chunk(cts.WINDOWSIZE), (4, 4))
+		print("Viewport size:", self.viewport_size)
 		# Chunks is a dictionary of chunks where each key corresponds to the chunk at that location
 		self.chunks = self.load_from_file()
 
@@ -63,6 +64,7 @@ class Map:
 
 	# Given the dict (grid) of rendered chunks, we move each row or column one step
 	def shiftchunks(self, x: int, y: int):
+		print("Shifting:", str((x, y)))
 		keys = self.rendered_chunks.keys()
 		keys_plus = [(key[0] + x, key[1] + y) for key in keys]
 		keys_minus = [(key[0] - x, key[1] - y) for key in keys]
@@ -71,6 +73,8 @@ class Map:
 			self.rendered_chunks[key] = self.get_chunk(key)
 		for key in [(key[0] + x, key[1] + y) for key in keys_minus if key not in keys]: # Gets keys oppsite movement
 			self.rendered_chunks.pop(key)
+		
+		self.obstacles = self.get_obstacles()
 
 	# Draws each chunk in the rendered dictionary to the screen
 	def draw_to(self, screen: pygame.Surface, camera_offset: list):

@@ -14,15 +14,15 @@ window = pygame.display.set_mode(cts.WINDOWSIZE)
 pygame.display.set_caption("TileWorld")
 running = True
 
-character = Player("Reza")
-world = Map("Belfer")
+character = Player("Reza", "Weaven")
+world = Map("Weaven")
 main_camera = Camera(character, world)
 
 mousePos = pygame.mouse.get_pos()
 mouseDown = False
 
 print("Starting...")
-print("Num of rendered chunks:", len(world.rendered_chunks))
+print("Rendered chunks:", world.rendered_chunks.keys())
 game_loops = 0
 
 while (running):
@@ -60,6 +60,7 @@ while (running):
 	for event in pygame.event.get():
 		if (event.type == pygame.QUIT):
 			world.save_to_file()
+			character.save_to_file()
 			running = False
 
 pygame.quit()
