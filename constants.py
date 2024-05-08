@@ -1,14 +1,27 @@
 import pygame
 pygame.init()
 
+
+def add(list1, list2):
+	return [x + y for x, y in zip(list1, list2)]
+
+def subtract(list1, list2):
+	return [x - y for x, y in zip(list1, list2)]
+
+def multiply(list1, list2):
+	return [x * y for x, y in zip(list1, list2)]
+
+def divide(list1, list2):
+	return [x / y for x, y in zip(list1, list2)]
+
 # Window
 WINDOWSIZE = (1400, 800)
 CENTER = (WINDOWSIZE[0] / 2, WINDOWSIZE[1] / 2)
 
 # World
 CHUNKSIZE = (8, 8)
-TILESIZE = 64
-CHUNKPIXELSIZE = (CHUNKSIZE[0] * TILESIZE, CHUNKSIZE[1] * TILESIZE)
+TILESIZE = (64, 64)
+CHUNKPIXELSIZE = multiply(CHUNKSIZE, TILESIZE)
 SEED = 2763492
 SAVEFOLDER = "worlds/"
 
@@ -39,17 +52,6 @@ COLORS = {
 
 FONT = pygame.font.Font(None, 36)
 
-def add(list1, list2):
-	return [x + y for x, y in zip(list1, list2)]
-
-def subtract(list1, list2):
-	return [x - y for x, y in zip(list1, list2)]
-
-def multiply(list1, list2):
-	return [x * y for x, y in zip(list1, list2)]
-
-def divide(list1, list2):
-	return [x / y for x, y in zip(list1, list2)]
 
 def str_to_tuple(string: str):
     try:
@@ -60,13 +62,13 @@ def str_to_tuple(string: str):
 
 
 def pxl_to_chunk(coordinates: list) -> tuple:
-	return (int(coordinates[0] // CHUNKPIXELSIZE[0]), int(coordinates[1] // CHUNKPIXELSIZE[1]))
+	return multiply(CHUNKPIXELSIZE, (int((coordinates[0] // CHUNKPIXELSIZE[0])), int((coordinates[1] // CHUNKPIXELSIZE[1]))))
 
 def chunk_to_pxl(coordinates: list) -> tuple:
-	return (int(coordinates[0] * CHUNKPIXELSIZE[0]), int(coordinates[1] * CHUNKPIXELSIZE[1]))
+	return (int(coordinates[0] * CHUNKSIZE[0]), int(coordinates[1] * CHUNKSIZE[1]))
 
 def pxl_to_tile(coordinates: list) -> tuple:
-	return (int(coordinates[0] // TILESIZE), int(coordinates[1] // TILESIZE))
+	return multiply(TILESIZE, (int(coordinates[0] // TILESIZE[0]), int(coordinates[1] // TILESIZE[1])))
 
 def tile_to_pxl(coordinates: list) -> tuple:
-	return (int(coordinates[0] * TILESIZE), int(coordinates[1] * TILESIZE))
+	return (int(coordinates[0] * TILESIZE[0]), int(coordinates[1] * TILESIZE[1]))

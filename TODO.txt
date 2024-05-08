@@ -1,0 +1,15 @@
+
+
+Things that make it hard to add to my game:
+
+So many coordinate systems, its hard to keep track of (camera pos, player pos, world pos, chunk coords, tile coords)
+Get caught up in optimizing my game
+
+
+TODO:
+
+Make buttons to build with different blocks / hotbar??
+Make an inventory class
+Make a UI map
+Make a way to make houses / enclosed with wall areas
+Make villagers, chests,omg so much to do

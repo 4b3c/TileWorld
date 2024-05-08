@@ -4,27 +4,39 @@ import constants as cts
 from game_objects.player import Player
 from game_world.map import Map
 from camera import Camera
+from gui.button import ToggleButton
 
 
+# Initialize pygame and pygame window
 pygame.init()
 clock = pygame.time.Clock()
-last_time = time.time()
-
 window = pygame.display.set_mode(cts.WINDOWSIZE)
 pygame.display.set_caption("TileWorld")
+
+
+# Initialize main game variables
 running = True
-
-character = Player("Reza", "Weaven")
-world = Map("Weaven")
-main_camera = Camera(character, world)
-
-mousePos = pygame.mouse.get_pos()
 mouseDown = False
-
-print("Starting...")
-print("Rendered chunks:", world.rendered_chunks.keys())
+mousePos = pygame.mouse.get_pos()
 game_loops = 0
+last_time = time.time()
 
+
+# Initialize player and world
+print("Starting...")
+character = Player("Reza", "Weaven")
+print("Player created")
+world = Map("Weaven")
+print("World created")
+main_camera = Camera(character, world)
+print("Camera created")
+
+
+# Testing
+button = ToggleButton((140, 60), (30, 30))
+
+
+# Main game loop
 while (running):
 	dt = clock.tick(120) / 1000
 
@@ -49,6 +61,7 @@ while (running):
 		
 	main_camera.update_scene(dt)
 	main_camera.draw_scene(window)
+	# button.draw_to(window)
 	pygame.display.flip()
 
 	game_loops += 1

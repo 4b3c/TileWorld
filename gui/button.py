@@ -1,10 +1,13 @@
 import pygame
 import constants as cts
+from game_objects.gameobject import GameObject
 
+class ToggleButton(GameObject):
 
-class ToggleButton:
+	def __init__(self, size: list, pos: list) -> None:
+		super().__init__(pos, size, pygame.Color(0, 0, 0))
 
-	def __init__(self, size: list) -> None:
+		# Overwrite the surface variable
 		self.surface = pygame.Surface(size, pygame.SRCALPHA)
 
 		pygame.draw.rect(self.surface, cts.COLORS["ui_brown"], (0, 0, size[0], size[1]), border_radius=8)

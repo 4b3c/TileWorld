@@ -19,5 +19,5 @@ class GameObject:
 		self.pos[1] += y
 
 	# Draws the object to the pygame window
-	def draw_to(self, screen: pygame.Surface, camera_offset: list):
+	def draw_to(self, screen: pygame.Surface, camera_offset: list = [0.0, 0.0]):
 		screen.blit(self.surface, (round(self.pos[0] - camera_offset[0]), round(self.pos[1] - camera_offset[1])))
