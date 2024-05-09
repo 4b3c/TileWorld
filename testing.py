@@ -35,6 +35,28 @@
 # print(to_remove)
 
 
-list1 = [0, 1, 2, 3, 4, 5]
+# list1 = [0, 1, 2, 3, 4, 5]
 
-print(list1[-2:1:1])
+# print(list1[-2:1:1])
+
+
+
+def spiral_order(width, height):
+    # Define initial position
+    x, y = width // 2, height // 2
+    dx, dy = 0, -1
+
+    for _ in range(width * height):
+        # Yield current position
+        yield (x, y)
+
+        # Change direction if needed
+        if (-width / 2 < x <= width / 2) and (-height / 2 < y <= height / 2):
+            dx, dy = -dy, dx
+        
+        # Move to the next position
+        x, y = x + dx, y + dy
+
+
+for i in spiral_order(4, 4):
+    print(i)

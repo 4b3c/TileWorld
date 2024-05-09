@@ -20,15 +20,15 @@ class Chunk:
 			pygame.draw.rect(self.surface, self.tiles[tile].color, (tile[0] - self.pos[0], tile[1] - self.pos[1], ts, ts))
 
 		# Add border and coordinate text for debugging purposes
-		pygame.draw.rect(self.surface, (40, 40, 40), (0, 0, cts.CHUNKPIXELSIZE[0], cts.CHUNKPIXELSIZE[0]), 2)
-		text_surface = cts.FONT.render(str(self.pos), True, (40, 40, 40))
-		text_rect = text_surface.get_rect()
-		text_rect.topleft = (15, 15)
-		self.surface.blit(text_surface, text_rect)
+		# pygame.draw.rect(self.surface, (40, 40, 40), (0, 0, cts.CHUNKPIXELSIZE[0], cts.CHUNKPIXELSIZE[0]), 2)
+		# text_surface = cts.FONT.render(str(self.pos), True, (40, 40, 40))
+		# text_rect = text_surface.get_rect()
+		# text_rect.topleft = (15, 15)
+		# self.surface.blit(text_surface, text_rect)
   
 	def load_next_tile(self):
-		self.tiles[self.tiles_to_load[0]] = Tile(self.tiles_to_load[0])
-		self.tiles_to_load.pop(0)
+		first_tile = self.tiles_to_load.pop(0)
+		self.tiles[first_tile] = Tile(first_tile)
 		self.update_surface()
 
 	def load_all_tiles(self):

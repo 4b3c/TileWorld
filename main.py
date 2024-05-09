@@ -1,5 +1,4 @@
 import pygame
-import time
 import constants as cts
 from game_objects.player import Player
 from game_world.map import Map
@@ -18,8 +17,6 @@ pygame.display.set_caption("TileWorld")
 running = True
 mouseDown = False
 mousePos = pygame.mouse.get_pos()
-game_loops = 0
-last_time = time.time()
 
 
 # Initialize player and world
@@ -33,8 +30,13 @@ print("Camera created")
 
 
 # Testing
-button = ToggleButton((140, 60), (30, 30))
+button = ToggleButton((140, 60), (cts.WINDOWSIZE[0] - 30 - 140, 30))
 
+def add_text(text: str, pos: tuple, screen: pygame.Surface):
+	text_surface = cts.FONT.render(text, True, (230, 230, 230))
+	text_rect = text_surface.get_rect()
+	text_rect.topleft = pos
+	screen.blit(text_surface, text_rect)
 
 # Main game loop
 while (running):
@@ -61,14 +63,10 @@ while (running):
 		
 	main_camera.update_scene(dt)
 	main_camera.draw_scene(window)
-	# button.draw_to(window)
+	button.draw_to(window)
+	add_text("fps: " + str(round(clock.get_fps())), (30, 30), window)
+	add_text("pos: " + str(round(character.pos[0])) + ", " + str(round(character.pos[1])), (30, 60), window)
 	pygame.display.flip()
-
-	game_loops += 1
-	if (time.time() - last_time >= 1):
-		print("fps:", game_loops)
-		game_loops = 0
-		last_time = time.time()
 
 	for event in pygame.event.get():
 		if (event.type == pygame.QUIT):
