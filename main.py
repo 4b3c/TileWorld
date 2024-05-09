@@ -30,7 +30,7 @@ print("Camera created")
 
 
 # Testing
-button = ToggleButton((140, 60), (cts.WINDOWSIZE[0] - 30 - 140, 30))
+button = ToggleButton("Pause", (140, 60), (cts.WINDOWSIZE[0] - 30 - 140, 30))
 
 def add_text(text: str, pos: tuple, screen: pygame.Surface):
 	text_surface = cts.FONT.render(text, True, (230, 230, 230))

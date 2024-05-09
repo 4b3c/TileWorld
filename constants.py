@@ -47,10 +47,16 @@ COLORS = {
 	"player_side": pygame.Color(80, 50, 50),
 	# Tile modificiations
 	"w": pygame.Color(80, 80, 80),
-	"t": pygame.Color(50, 190, 90)
+	"t": pygame.Color(50, 190, 90),
+	# Random Palette
+	"blue": pygame.Color(51, 72, 77),
+	"teal": pygame.Color(61, 101, 93),
+	"green": pygame.Color(118, 147, 83),
+	"yelllow": pygame.Color(235, 191, 88)
 }
 
 FONT = pygame.font.Font(None, 36)
+FONTLARGE = pygame.font.Font(None, 52)
 
 
 def str_to_tuple(string: str):
