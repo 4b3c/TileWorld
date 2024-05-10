@@ -13,8 +13,8 @@ class VelocityObject(GameObject):
 		self.vel = vel
 
 	# Increments the players velocity by the specified x and y amounts
-	def accelerate(self, x: float, y: float):
-		self.vel = cts.add(self.vel, [x, y])
+	def accelerate(self, force: tuple):
+		self.vel = cts.add(self.vel, force)
 
 		# Caps the velocity magnitude so that the max is the same even with diagonal movement
 		velmag = math.sqrt(self.vel[0]**2 + self.vel[1]**2)

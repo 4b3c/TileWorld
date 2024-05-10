@@ -42,7 +42,6 @@ def add_text(text: str, pos: tuple, screen: pygame.Surface):
 while (running):
 	dt = clock.tick(120) / 1000
 
-	lastPos = mousePos
 	mousePos = pygame.mouse.get_pos()
 	mousePressed = pygame.mouse.get_pressed()
 	keypresses = pygame.key.get_pressed()
