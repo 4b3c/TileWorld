@@ -1,5 +1,3 @@
-import pygame
-from gui.button import ToggleButton
 
 
 class Input:
@@ -17,4 +15,4 @@ class Input:
 	def check_click(self, mouse_pos: tuple):
 		for button in self.buttons:
 			if (button.rect.collidepoint(mouse_pos)):
-				button.clicked()
+				return button.clicked()

@@ -3,7 +3,7 @@ import constants as cts
 from game_objects.player import Player
 from game_world.map import Map
 from camera import Camera
-from gui.button import ToggleButton
+from gui.button import Button
 
 
 # Initialize pygame and pygame window
@@ -30,7 +30,7 @@ print("Camera created")
 
 
 # Testing
-button = ToggleButton("Pause", (140, 60), (cts.WINDOWSIZE[0] - 30 - 140, 30))
+button = Button("Pause", (140, 60), (cts.WINDOWSIZE[0] - 30 - 140, 30))
 
 def add_text(text: str, pos: tuple, screen: pygame.Surface):
 	text_surface = cts.FONT.render(text, True, (230, 230, 230))

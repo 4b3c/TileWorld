@@ -1,7 +1,10 @@
 import pygame
 import constants as cts
+from gui.scene import Scene
 
-class ToggleButton:
+
+
+class Button:
 
 	def __init__(self, text: str, size: list, pos: list):
 		self.text = text
@@ -33,6 +36,5 @@ class ToggleButton:
 	def draw_to(self, window: pygame.Surface):
 		window.blit(self.surface, self.pos)
 
-	def clicked(self):
-		print(self.text)
-
+	def clicked(self) -> str:
+		return self.text
