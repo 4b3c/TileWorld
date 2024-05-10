@@ -40,6 +40,10 @@ class Scene:
 				if (next_scene != None):
 					return next_scene
 				
+			elif (event.type == pygame.KEYDOWN):
+				if (event.key == pygame.K_ESCAPE):
+					return "Back"
+				
 			elif (event.type == pygame.QUIT):
 				return "Quit"
 		

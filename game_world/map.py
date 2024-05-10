@@ -1,5 +1,6 @@
 import pygame
 import json
+import os
 import constants as cts
 from game_world.chunk import Chunk
 
@@ -7,7 +8,16 @@ from game_world.chunk import Chunk
 class Map:
 
 	def __init__(self, savefile: str):
-		self.savefile = savefile + "/world.json"
+		if (savefile in os.listdir(cts.SAVEFOLDER)):
+			self.savefile = savefile + "/world.json"
+		else: # If the world doesn't already exist, we create a folder for it in the worlds directory
+			os.mkdir(cts.SAVEFOLDER + savefile)
+			self.savefile = savefile + "/world.json"
+			with open(cts.SAVEFOLDER + self.savefile, 'w') as f: # Then we create a file for the world data
+				json.dump({}, f, indent = 1)
+			with open(cts.SAVEFOLDER + savefile + "/player.json", 'w') as f: # And a file for the player data
+				json.dump({"pos": (0.0, 0.0)}, f, indent = 1)
+
 		# Chunks is a dictionary of chunks where each key corresponds to the chunk at that location
 		self.chunks = self.load_from_file()
 

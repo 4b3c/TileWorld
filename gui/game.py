@@ -9,17 +9,18 @@ from camera import Camera
 
 class Game(Scene):
 
-	def __init__(self):
+	def __init__(self, filename: str):
 		super().__init__()
 
+		self.filename = filename
 		self.buttons = [
 			Button("Pause", (160, 50), (1400 - 190, 30))
 		]
 		self.add_buttons(self.buttons)		
 
 		# Initialize player and world
-		self.character = Player("Reza", "Weaven")
-		self.world = Map("Weaven")
+		self.world = Map(self.filename) # Creating the world before the player is important incase it doesn't have a save folder
+		self.character = Player("Reza", self.filename)
 		self.main_camera = Camera(self.character, self.world)
 
 	def run(self, clock: pygame.Clock, window: pygame.Surface):
@@ -48,6 +49,8 @@ class Game(Scene):
 				elif (event.type == pygame.MOUSEBUTTONDOWN):
 					next_scene = self.input_handler.check_click(event.dict["pos"])
 					if (next_scene != None):
+						self.world.save_to_file()
+						self.character.save_to_file()
 						return next_scene
 					
 				elif (event.type == pygame.QUIT):
