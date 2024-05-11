@@ -48,7 +48,9 @@ class Game(Scene):
 
 				elif (event.type == pygame.MOUSEBUTTONDOWN):
 					next_scene = self.input_handler.check_click(event.dict["pos"])
-					if (next_scene != None):
+					if (next_scene == None):
+						self.world.modify(cts.add(event.pos, self.main_camera.pos), "w")
+					else:
 						self.world.save_to_file()
 						self.character.save_to_file()
 						return next_scene
