@@ -8,7 +8,7 @@ clock = pygame.time.Clock()
 window = pygame.display.set_mode((1400, 800))
 pygame.display.set_caption("TileWorld")
 
-tileset = pygame.image.load("tests/tiles.png")
+tileset = pygame.image.load("images/tiles.png")
 
 
 grasses = [tileset.subsurface(i * 64, 0, 64, 64) for i in range(7) for _ in range(int(i // 2) + 1)]

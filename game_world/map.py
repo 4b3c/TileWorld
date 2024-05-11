@@ -26,7 +26,7 @@ class Map:
 		# It's initially set to only one chunk, because it will automatically adjust its size to what is needed
 		center_chunk_pos = tuple(cts.pxl_to_chunk(camera_offset))
 		self.rendered_chunks = {center_chunk_pos: self.get_chunk(center_chunk_pos)}
-		self.obstacles = self.get_obstacles()
+		self.obstacles = {chunk: self.rendered_chunks[chunk].obstacles() for chunk in self.rendered_chunks}
 
 	def load_from_file(self) -> dict:
 		with open(cts.SAVEFOLDER + self.savefile, 'r') as f:
@@ -82,16 +82,14 @@ class Map:
 		keys_plus = [(key[0] + x, key[1] + y) for key in keys]
 		for key in [key for key in keys_plus if key not in keys]: # Gets keys one forward in direction of movement
 			self.rendered_chunks[key] = self.get_chunk(key)
-
-		self.obstacles = self.get_obstacles()
+			self.obstacles[key] = self.rendered_chunks[key].obstacles() # Also adds obstacles to the dictionary of obstacles
 
 	def remove_from_render(self, x: int, y: int, keys: list):
 		keys_minus = [(key[0] - x, key[1] - y) for key in keys]
 		for key in [(key[0] + x, key[1] + y) for key in keys_minus if key not in keys]: # Gets keys oppsite movement
 			self.rendered_chunks.pop(key)
+			self.obstacles.pop(key) # Also updates obstacles, removing the unrendered ones
 		
-		self.obstacles = self.get_obstacles()
-
 	# Draws each chunk in the rendered dictionary to the screen
 	def draw_to(self, screen: pygame.Surface, camera_offset: list):
 		for chunk in self.rendered_chunks:
@@ -103,14 +101,10 @@ class Map:
 		tile = tuple(cts.pxl_to_tile(coordinates))
 		self.chunks[chunk] = self.rendered_chunks[chunk]
 		self.chunks[chunk].modify(tile, change)
-		self.obstacles = self.get_obstacles()
+		self.obstacles[chunk] = self.rendered_chunks[chunk].obstacles()
 
 	def demodify(self, coordinates: list):
 		chunk = tuple(cts.pxl_to_chunk(coordinates))
 		tile = tuple(cts.pxl_to_tile(coordinates))
 		self.chunks[chunk].demodify(tile)
-		self.obstacles = self.get_obstacles()
-
-	def get_obstacles(self) -> list:
-		# This is a nested loop because otherwise it would be a list of lists of obstacles, so we unpack the obstacle list too
-		return [obstacle for chunk in self.rendered_chunks for obstacle in self.rendered_chunks[chunk].obstacles()]
+		self.obstacles.pop(chunk)

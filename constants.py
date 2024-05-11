@@ -24,6 +24,10 @@ TILESIZE = (64, 64)
 CHUNKPIXELSIZE = multiply(CHUNKSIZE, TILESIZE)
 SEED = 2763492
 SAVEFOLDER = "worlds/"
+TILESET = pygame.image.load("images/tiles.png")
+grasses = [TILESET.subsurface(i * 64, 0, 64, 64) for i in range(7) for _ in range(int(i // 2) + 1)]
+forrests = [TILESET.subsurface(i * 64, 64, 64, 64) for i in range(7) for _ in range(int(i // 2) + 1)]
+rocks = [TILESET.subsurface(i * 64, 128, 64, 64) for i in range(7) for _ in range(int(i // 2) + 1)]
 
 # Player
 PLAYERSIZE = (50, 50)

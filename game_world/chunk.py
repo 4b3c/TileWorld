@@ -15,9 +15,8 @@ class Chunk:
 
 	# Generates the pygame surface used for displaying to the screen
 	def update_surface(self):
-		ts = cts.TILESIZE[0]
 		for tile in self.tiles:
-			pygame.draw.rect(self.surface, self.tiles[tile].color, (tile[0] - self.pos[0], tile[1] - self.pos[1], ts, ts))
+			self.surface.blit(self.tiles[tile].surface, (tile[0] - self.pos[0], tile[1] - self.pos[1]))
 
 		# Add border and coordinate text for debugging purposes
 		# pygame.draw.rect(self.surface, (40, 40, 40), (0, 0, cts.CHUNKPIXELSIZE[0], cts.CHUNKPIXELSIZE[0]), 2)
@@ -25,11 +24,14 @@ class Chunk:
 		# text_rect = text_surface.get_rect()
 		# text_rect.topleft = (15, 15)
 		# self.surface.blit(text_surface, text_rect)
+
+	def add_tile_to_surf(self, tile: tuple):
+		self.surface.blit(self.tiles[tile].surface, (tile[0] - self.pos[0], tile[1] - self.pos[1]))
   
 	def load_next_tile(self):
 		first_tile = self.tiles_to_load.pop(0)
 		self.tiles[first_tile] = Tile(first_tile)
-		self.update_surface()
+		self.add_tile_to_surf(first_tile)
 
 	def load_all_tiles(self):
 		while (self.tiles_to_load != []):
@@ -43,14 +45,12 @@ class Chunk:
 	
 	# Allows for the modification of tiles
 	def modify(self, tile: Tile, change: str):
-		ts = cts.TILESIZE
 		self.tiles[tile].modify(change)
-		pygame.draw.rect(self.surface, cts.COLORS[change], (tile[0] - self.pos[0], tile[1] - self.pos[1], ts[0], ts[1]))
+		self.add_tile_to_surf(tile)
 
 	def demodify(self, tile: Tile):
-		ts = cts.TILESIZE
 		self.tiles[tile].demodify()
-		pygame.draw.rect(self.surface, self.tiles[tile].color, (tile[0] - self.pos[0], tile[1] - self.pos[1], ts[0], ts[1]))
+		self.add_tile_to_surf(tile)
 
 	def get_save_dict(self) -> dict:
 		save_list = {}
