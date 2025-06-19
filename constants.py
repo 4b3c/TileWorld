@@ -1,21 +1,6 @@
-import pygame
-pygame.init()
+import random, pygame
 
-
-def add(list1, list2):
-	return [x + y for x, y in zip(list1, list2)]
-
-def subtract(list1, list2):
-	return [x - y for x, y in zip(list1, list2)]
-
-def multiply(list1, list2):
-	return [x * y for x, y in zip(list1, list2)]
-
-def divide(list1, list2):
-	return [x / y for x, y in zip(list1, list2)]
-
-# Window
-WINDOWSIZE = (1400, 800)
+WINDOWSIZE = (1200, 800)
 CENTER = (WINDOWSIZE[0] / 2, WINDOWSIZE[1] / 2)
 
 # World
